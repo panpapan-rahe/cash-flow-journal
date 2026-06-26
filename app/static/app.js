@@ -60,58 +60,9 @@ const txForm = document.getElementById('transaction-form');
 const txType = document.getElementById('tx-type');
 const toAccountGroup = document.getElementById('to-account-group');
 
-txType.addEventListener('change', () => {
-    toAccountGroup.style.display = txType.value === 'transfer' ? 'flex' : 'none';
-    updateCategoryDropdown();
-});
 
-txForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const payload = {
-        type: txType.value,
-        amount: parseFloat(document.getElementById('tx-amount').value),
-        category: document.getElementById('tx-category').value,
-        account: document.getElementById('tx-account').value || 'Utama',
-        description: document.getElementById('tx-desc').value,
-        date: document.getElementById('tx-date').value
-    };
-
-    if (txType.value === 'transfer') {
-        payload.to_account = document.getElementById('tx-to-account').value || 'Lainnya';
-    }
-
-    try {
-        const result = await api('/api/transactions', {
-            method: 'POST',
-            body: JSON.stringify(payload)
-        });
-        if (result.ok) {
-            txForm.reset();
-            document.getElementById('tx-date').value = todayISO();
-            await loadTransactions();
-            await loadSummary();
-        }
-    } catch (e) {
-        alert('Gagal menyimpan transaksi: ' + e.message);
-    }
-});
 
 // ─── Category & Account Lists ───
-async function updateCategoryDatalist() {
-    try {
-        const categories = await api('/api/categories');
-        const datalist = document.getElementById('category-list');
-        const currentType = txType.value; // income atau expense
-        datalist.innerHTML = categories
-            .filter(c => (currentType === 'transfer' || c.type === (currentType === 'income' ? 'income' : 'expense')))
-            .map(c => `<option value="${c.name}">`)
-            .join('');
-    } catch (e) {
-        console.warn('Failed to load categories', e);
-    }
-}
-
 async function updateAccountDropdowns() {
     try {
         const accounts = await api('/api/accounts');
@@ -159,7 +110,7 @@ async function loadTransactions() {
     try {
         allTransactions = await api('/api/transactions');
         renderTransactions(allTransactions);
-        updateCategoryDatalist();
+        updateCategoryDropdown();
         updateAccountDropdowns();
     } catch (e) {
         console.warn('Failed to load transactions', e);
@@ -742,5 +693,58 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginPage) return; // on login page
     
     document.getElementById('tx-date').value = todayISO();
+    
+    // Attach event listeners immediately (don't wait for checkAuth)
+    attachTransactionFormListener();
+    attachTypeChangeListener();
+    
+    // Load data
     checkAuth();
 });
+
+function attachTransactionFormListener() {
+    const txForm = document.getElementById('transaction-form');
+    if (!txForm) return;
+    
+    txForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const payload = {
+            type: txType.value,
+            amount: parseFloat(document.getElementById('tx-amount').value),
+            category: document.getElementById('tx-category').value,
+            account: document.getElementById('tx-account').value || 'Utama',
+            description: document.getElementById('tx-desc').value,
+            date: document.getElementById('tx-date').value
+        };
+
+        if (txType.value === 'transfer') {
+            payload.to_account = document.getElementById('tx-to-account').value || 'Lainnya';
+        }
+
+        try {
+            const result = await api('/api/transactions', {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            if (result.ok) {
+                txForm.reset();
+                document.getElementById('tx-date').value = todayISO();
+                await loadTransactions();
+                await loadSummary();
+                await loadAccountsGrid();
+                await updateAccountDropdowns();
+                await updateCategoryDropdown();
+            }
+        } catch (e) {
+            alert('Gagal menyimpan transaksi: ' + e.message);
+        }
+    });
+}
+
+function attachTypeChangeListener() {
+    txType.addEventListener('change', () => {
+        toAccountGroup.style.display = txType.value === 'transfer' ? 'flex' : 'none';
+        updateCategoryDropdown();
+    });
+}
