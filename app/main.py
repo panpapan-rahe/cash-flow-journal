@@ -242,9 +242,68 @@ def get_accounts():
     if not g.user:
         return jsonify({"error": "Unauthorized"}), 401
     db = get_db(g.user["id"])
-    rows = db.execute("SELECT * FROM accounts ORDER BY name").fetchall()
+    accounts = db.execute("SELECT * FROM accounts ORDER BY name").fetchall()
+    
+    result = []
+    for acc in accounts:
+        aid = acc["id"]
+        income = db.execute("SELECT COALESCE(SUM(amount), 0) as t FROM transactions WHERE account_id=? AND type='income'", (aid,)).fetchone()["t"]
+        expense = db.execute("SELECT COALESCE(SUM(amount), 0) as t FROM transactions WHERE account_id=? AND type='expense'", (aid,)).fetchone()["t"]
+        transfer_out = db.execute("SELECT COALESCE(SUM(amount), 0) as t FROM transactions WHERE account_id=? AND type='transfer'", (aid,)).fetchone()["t"]
+        transfer_in = db.execute("SELECT COALESCE(SUM(amount), 0) as t FROM transactions WHERE to_account_id=? AND type='transfer'", (aid,)).fetchone()["t"]
+        
+        row = dict(acc)
+        row["income"] = income
+        row["expense"] = expense
+        row["transfer_out"] = transfer_out
+        row["transfer_in"] = transfer_in
+        row["balance"] = income - expense - transfer_out + transfer_in
+        result.append(row)
+    
     db.close()
-    return jsonify([dict(r) for r in rows])
+    return jsonify(result)
+
+@app.route("/api/accounts", methods=["POST"])
+def create_account():
+    if not g.user:
+        return jsonify({"error": "Unauthorized"}), 401
+    data = request.get_json()
+    name = data.get("name", "").strip()
+    if not name:
+        return jsonify({"error": "Nama rekening wajib diisi"}), 400
+    db = get_db(g.user["id"])
+    try:
+        db.execute("INSERT INTO accounts (name) VALUES (?)", (name,))
+        db.commit()
+    except Exception as e:
+        db.close()
+        return jsonify({"error": str(e)}), 400
+    db.close()
+    return jsonify({"ok": True})
+
+@app.route("/api/accounts/<int:acc_id>", methods=["PUT"])
+def update_account(acc_id):
+    if not g.user:
+        return jsonify({"error": "Unauthorized"}), 401
+    data = request.get_json()
+    name = data.get("name", "").strip()
+    if not name:
+        return jsonify({"error": "Nama rekening wajib diisi"}), 400
+    db = get_db(g.user["id"])
+    db.execute("UPDATE accounts SET name = ? WHERE id = ?", (name, acc_id))
+    db.commit()
+    db.close()
+    return jsonify({"ok": True})
+
+@app.route("/api/accounts/<int:acc_id>", methods=["DELETE"])
+def delete_account(acc_id):
+    if not g.user:
+        return jsonify({"error": "Unauthorized"}), 401
+    db = get_db(g.user["id"])
+    db.execute("DELETE FROM accounts WHERE id = ?", (acc_id,))
+    db.commit()
+    db.close()
+    return jsonify({"ok": True})
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8000)

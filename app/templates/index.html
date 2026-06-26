@@ -13,6 +13,7 @@
         </div>
         <div class="topbar-right">
             <span class="user-badge">{{ username }}</span>
+            <button class="btn btn-sm btn-outline" id="btn-settings">Pengaturan</button>
             <a href="/logout" class="btn btn-sm btn-outline">Keluar</a>
         </div>
     </header>
@@ -35,6 +36,16 @@
             <div class="card card-debt">
                 <div class="card-label">Hutang Aktif</div>
                 <div class="card-value" id="summary-debt">Rp 0</div>
+            </div>
+        </section>
+
+        <!-- Accounts Overview -->
+        <section class="card">
+            <div class="section-header">
+                <h2>Rekening</h2>
+            </div>
+            <div class="accounts-grid" id="accounts-grid">
+                <div class="empty-state">Belum ada rekening</div>
             </div>
         </section>
 
@@ -179,6 +190,55 @@
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closePayModal()">Batal</button>
                     <button type="submit" class="btn btn-primary">Bayar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Settings (Accounts) -->
+    <div class="modal-overlay" id="settings-modal" style="display:none">
+        <div class="modal modal-lg">
+            <div class="section-header">
+                <h3>Rekening</h3>
+                <button class="btn btn-sm btn-primary" id="btn-add-account">+ Tambah Rekening</button>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table" id="accounts-table">
+                    <thead>
+                        <tr>
+                            <th>Nama Rekening</th>
+                            <th>Pemasukan</th>
+                            <th>Pengeluaran</th>
+                            <th>Mutasi Keluar</th>
+                            <th>Mutasi Masuk</th>
+                            <th>Saldo</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="accounts-settings-body">
+                        <tr><td colspan="7" class="empty-state">Belum ada rekening</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeSettingsModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add/Edit Account -->
+    <div class="modal-overlay" id="account-form-modal" style="display:none">
+        <div class="modal">
+            <h3 id="account-form-title">Tambah Rekening</h3>
+            <form id="account-form">
+                <input type="hidden" id="account-id">
+                <div class="form-group">
+                    <label>Nama Rekening</label>
+                    <input type="text" id="account-name" required placeholder="contoh: BCA, Mandiri, Cash">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAccountFormModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>

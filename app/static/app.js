@@ -320,9 +320,155 @@ async function deleteDebt(id) {
     }
 }
 
+// ─── Settings (Accounts) ───
+const settingsModal = document.getElementById('settings-modal');
+const accountFormModal = document.getElementById('account-form-modal');
+const btnSettings = document.getElementById('btn-settings');
+const btnAddAccount = document.getElementById('btn-add-account');
+
+btnSettings.addEventListener('click', async () => {
+    settingsModal.style.display = 'flex';
+    await loadAccountsSettings();
+});
+
+btnAddAccount.addEventListener('click', () => {
+    document.getElementById('account-form-title').textContent = 'Tambah Rekening';
+    document.getElementById('account-id').value = '';
+    document.getElementById('account-name').value = '';
+    accountFormModal.style.display = 'flex';
+});
+
+window.closeSettingsModal = function() {
+    settingsModal.style.display = 'none';
+};
+
+window.closeAccountFormModal = function() {
+    accountFormModal.style.display = 'none';
+};
+
+settingsModal.addEventListener('click', (e) => {
+    if (e.target === settingsModal) closeSettingsModal();
+});
+
+accountFormModal.addEventListener('click', (e) => {
+    if (e.target === accountFormModal) closeAccountFormModal();
+});
+
+// Account form submit (create or update)
+document.getElementById('account-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('account-id').value;
+    const name = document.getElementById('account-name').value.trim();
+    const payload = { name };
+    
+    try {
+        if (id) {
+            await api('/api/accounts/' + id, { method: 'PUT', body: JSON.stringify(payload) });
+        } else {
+            await api('/api/accounts', { method: 'POST', body: JSON.stringify(payload) });
+        }
+        closeAccountFormModal();
+        await loadAccountsSettings();
+        await updateAccountDatalist();
+    } catch (e) {
+        alert('Gagal menyimpan rekening: ' + e.message);
+    }
+});
+
+async function loadAccountsSettings() {
+    try {
+        const accounts = await api('/api/accounts');
+        const tbody = document.getElementById('accounts-settings-body');
+        
+        if (accounts.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Belum ada rekening</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = accounts.map(acc => {
+            const income = acc.income || 0;
+            const expense = acc.expense || 0;
+            const transferOut = acc.transfer_out || 0;
+            const transferIn = acc.transfer_in || 0;
+            const balance = income - expense - transferOut + transferIn;
+            const balanceClass = balance < 0 ? 'amount-expense' : 'amount-income';
+
+            return `
+                <tr>
+                    <td><strong>${acc.name}</strong></td>
+                    <td class="amount-income">+ ${formatCurrency(income)}</td>
+                    <td class="amount-expense">- ${formatCurrency(expense)}</td>
+                    <td class="amount-transfer">- ${formatCurrency(transferOut)}</td>
+                    <td class="amount-transfer">+ ${formatCurrency(transferIn)}</td>
+                    <td class="${balanceClass}"><strong>${formatCurrency(balance)}</strong></td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary" onclick="editAccount(${acc.id}, '${acc.name}')">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteAccount(${acc.id})">Hapus</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    } catch (e) {
+        console.warn('Failed to load accounts settings', e);
+    }
+}
+
+window.editAccount = function(id, name) {
+    document.getElementById('account-form-title').textContent = 'Edit Rekening';
+    document.getElementById('account-id').value = id;
+    document.getElementById('account-name').value = name;
+    accountFormModal.style.display = 'flex';
+};
+
+window.deleteAccount = async function(id) {
+    if (!confirm('Hapus rekening ini? Transaksi terkait tidak akan dihapus.')) return;
+    try {
+        await api('/api/accounts/' + id, { method: 'DELETE' });
+        await loadAccountsSettings();
+        await updateAccountDatalist();
+    } catch (e) {
+        alert('Gagal menghapus: ' + e.message);
+    }
+};
+
+// ─── Accounts Grid (Dashboard) ───
+async function loadAccountsGrid() {
+    try {
+        const accounts = await api('/api/accounts');
+        const grid = document.getElementById('accounts-grid');
+        
+        if (accounts.length === 0) {
+            grid.innerHTML = '<div class="empty-state">Belum ada rekening. Buka Pengaturan untuk menambah.</div>';
+            return;
+        }
+
+        grid.innerHTML = accounts.map(acc => {
+            const income = acc.income || 0;
+            const expense = acc.expense || 0;
+            const transferOut = acc.transfer_out || 0;
+            const transferIn = acc.transfer_in || 0;
+            const balance = income - expense - transferOut + transferIn;
+            const balanceClass = balance < 0 ? 'negative' : '';
+
+            return `
+                <div class="account-card">
+                    <div class="account-name">${acc.name}</div>
+                    <div class="account-balance ${balanceClass}">${formatCurrency(balance)}</div>
+                    <div class="account-stats">
+                        <span>↑ ${formatCurrency(income)}</span>
+                        <span>↓ ${formatCurrency(expense)}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (e) {
+        console.warn('Failed to load accounts grid', e);
+    }
+}
+
 // ─── Render All ───
 async function renderAll() {
-    await Promise.all([loadSummary(), loadTransactions(), loadDebts()]);
+    await Promise.all([loadSummary(), loadTransactions(), loadDebts(), loadAccountsGrid()]);
 }
 
 // ─── Init ───
