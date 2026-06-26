@@ -354,6 +354,38 @@ accountFormModal.addEventListener('click', (e) => {
     if (e.target === accountFormModal) closeAccountFormModal();
 });
 
+// ─── Forced Account Modal (first-time user) ───
+const forcedAccountModal = document.getElementById('account-form-modal');
+
+// Override forced modal behavior
+function showForcedAccountModal() {
+    document.getElementById('account-form-title').textContent = 'Tambah Rekening Pertama';
+    document.getElementById('account-id').value = '';
+    document.getElementById('account-name').value = '';
+    forcedAccountModal.style.display = 'flex';
+    forcedAccountModal.classList.add('forced');
+}
+
+function closeForcedAccountModal() {
+    // Only allow close if user has at least 1 account
+    api('/api/accounts/count').then(data => {
+        if (data.count >= 1) {
+            forcedAccountModal.style.display = 'none';
+            forcedAccountModal.classList.remove('forced');
+            loadAccountsGrid();
+            updateAccountDatalist();
+        } else {
+            alert('Minimal 1 rekening harus dibuat terlebih dahulu.');
+        }
+    });
+}
+
+forcedAccountModal.addEventListener('click', (e) => {
+    if (e.target === forcedAccountModal) {
+        closeForcedAccountModal();
+    }
+});
+
 // Account form submit (create or update)
 document.getElementById('account-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -367,8 +399,14 @@ document.getElementById('account-form').addEventListener('submit', async (e) => 
         } else {
             await api('/api/accounts', { method: 'POST', body: JSON.stringify(payload) });
         }
-        closeAccountFormModal();
-        await loadAccountsSettings();
+        if (forcedAccountModal.classList.contains('forced')) {
+            closeForcedAccountModal();
+        } else {
+            closeAccountFormModal();
+            await loadAccountsSettings();
+            await updateAccountDatalist();
+        }
+        await loadAccountsGrid();
         await updateAccountDatalist();
     } catch (e) {
         alert('Gagal menyimpan rekening: ' + e.message);
@@ -439,6 +477,8 @@ async function loadAccountsGrid() {
         
         if (accounts.length === 0) {
             grid.innerHTML = '<div class="empty-state">Belum ada rekening. Buka Pengaturan untuk menambah.</div>';
+            // Show forced modal (cannot close without creating at least 1 account)
+            showForcedAccountModal();
             return;
         }
 

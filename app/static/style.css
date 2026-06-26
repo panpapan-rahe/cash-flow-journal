@@ -503,6 +503,11 @@ body {
     max-width: 700px;
 }
 
+/* ─── Forced Modal ─── */
+.modal.forced .modal-actions {
+    display: none;
+}
+
 .modal h3 {
     font-size: 1.1rem;
     margin-bottom: 16px;

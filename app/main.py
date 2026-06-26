@@ -237,6 +237,15 @@ def get_categories():
     db.close()
     return jsonify([dict(r) for r in rows])
 
+@app.route("/api/accounts/count")
+def count_accounts():
+    if not g.user:
+        return jsonify({"error": "Unauthorized"}), 401
+    db = get_db(g.user["id"])
+    row = db.execute("SELECT COUNT(*) as cnt FROM accounts").fetchone()
+    db.close()
+    return jsonify({"count": row["cnt"]})
+
 @app.route("/api/accounts")
 def get_accounts():
     if not g.user:
