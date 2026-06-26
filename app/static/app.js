@@ -62,8 +62,7 @@ const toAccountGroup = document.getElementById('to-account-group');
 
 txType.addEventListener('change', () => {
     toAccountGroup.style.display = txType.value === 'transfer' ? 'flex' : 'none';
-    // Update category datalist based on type
-    updateCategoryDatalist();
+    updateCategoryDropdown();
 });
 
 txForm.addEventListener('submit', async (e) => {
@@ -129,6 +128,27 @@ async function updateAccountDropdowns() {
         }
     } catch (e) {
         console.warn('Failed to load account dropdowns', e);
+    }
+}
+
+async function updateCategoryDropdown() {
+    try {
+        const categories = await api('/api/categories');
+        const select = document.getElementById('tx-category');
+        const currentType = document.getElementById('tx-type').value;
+        
+        // Filter categories by transaction type
+        let filtered = categories;
+        if (currentType === 'income') {
+            filtered = categories.filter(c => c.type === 'income');
+        } else if (currentType === 'expense') {
+            filtered = categories.filter(c => c.type === 'expense');
+        }
+        
+        select.innerHTML = '<option value="">-- Pilih Kategori --</option>' + 
+            filtered.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+    } catch (e) {
+        console.warn('Failed to load category dropdown', e);
     }
 }
 
@@ -327,11 +347,28 @@ async function deleteDebt(id) {
     }
 }
 
-// ─── Settings (Accounts) ───
+// ─── Settings (Accounts & Categories) ───
 const settingsModal = document.getElementById('settings-modal');
 const accountFormModal = document.getElementById('account-form-modal');
+const categoryFormModal = document.getElementById('category-form-modal');
+const forcedSetupModal = document.getElementById('forced-setup-modal');
 const btnSettings = document.getElementById('btn-settings');
 const btnAddAccount = document.getElementById('btn-add-account');
+
+// Settings nav switching
+document.querySelectorAll('.settings-nav-item').forEach(nav => {
+    nav.addEventListener('click', () => {
+        document.querySelectorAll('.settings-nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+        nav.classList.add('active');
+        
+        const panelId = 'panel-' + nav.dataset.panel;
+        document.getElementById(panelId).classList.add('active');
+        
+        if (nav.dataset.panel === 'accounts') loadAccountsSettings();
+        if (nav.dataset.panel === 'categories') loadCategoriesSettings();
+    });
+});
 
 btnSettings.addEventListener('click', async () => {
     settingsModal.style.display = 'flex';
@@ -345,12 +382,24 @@ btnAddAccount.addEventListener('click', () => {
     accountFormModal.style.display = 'flex';
 });
 
+document.getElementById('btn-add-category').addEventListener('click', () => {
+    document.getElementById('category-id').value = '';
+    document.getElementById('category-name').value = '';
+    document.querySelector('input[name="category-type"][value="income"]').checked = true;
+    categoryFormModal.style.display = 'flex';
+});
+
 window.closeSettingsModal = function() {
     settingsModal.style.display = 'none';
 };
 
 window.closeAccountFormModal = function() {
     accountFormModal.style.display = 'none';
+    accountFormModal.classList.remove('forced');
+};
+
+window.closeCategoryFormModal = function() {
+    categoryFormModal.style.display = 'none';
 };
 
 settingsModal.addEventListener('click', (e) => {
@@ -358,38 +407,17 @@ settingsModal.addEventListener('click', (e) => {
 });
 
 accountFormModal.addEventListener('click', (e) => {
-    if (e.target === accountFormModal) closeAccountFormModal();
+    if (e.target === accountFormModal && !accountFormModal.classList.contains('forced')) closeAccountFormModal();
 });
 
-// ─── Forced Account Modal (first-time user) ───
-const forcedAccountModal = document.getElementById('account-form-modal');
+categoryFormModal.addEventListener('click', (e) => {
+    if (e.target === categoryFormModal) closeCategoryFormModal();
+});
 
-// Override forced modal behavior
-function showForcedAccountModal() {
-    document.getElementById('account-form-title').textContent = 'Tambah Rekening Pertama';
-    document.getElementById('account-id').value = '';
-    document.getElementById('account-name').value = '';
-    forcedAccountModal.style.display = 'flex';
-    forcedAccountModal.classList.add('forced');
-}
-
-function closeForcedAccountModal() {
-    // Only allow close if user has at least 1 account
-    api('/api/accounts/count').then(data => {
-        if (data.count >= 1) {
-            forcedAccountModal.style.display = 'none';
-            forcedAccountModal.classList.remove('forced');
-            loadAccountsGrid();
-            updateAccountDropdowns();
-        } else {
-            alert('Minimal 1 rekening harus dibuat terlebih dahulu.');
-        }
-    });
-}
-
-forcedAccountModal.addEventListener('click', (e) => {
-    if (e.target === forcedAccountModal) {
-        closeForcedAccountModal();
+forcedSetupModal.addEventListener('click', (e) => {
+    if (e.target === forcedSetupModal) {
+        // Cannot close unless setup is complete
+        alert('Anda harus menyelesaikan setup terlebih dahulu.');
     }
 });
 
@@ -406,17 +434,42 @@ document.getElementById('account-form').addEventListener('submit', async (e) => 
         } else {
             await api('/api/accounts', { method: 'POST', body: JSON.stringify(payload) });
         }
-        if (forcedAccountModal.classList.contains('forced')) {
-            closeForcedAccountModal();
+        if (accountFormModal.classList.contains('forced')) {
+            // Check if now has accounts
+            const count = await api('/api/accounts/count');
+            if (count.count >= 1) {
+                accountFormModal.style.display = 'none';
+                accountFormModal.classList.remove('forced');
+                loadAccountsGrid();
+                updateAccountDropdowns();
+                // Show forced setup modal (sheet 1)
+                showForcedSetupModal();
+            }
         } else {
             closeAccountFormModal();
             await loadAccountsSettings();
+            await loadAccountsGrid();
             await updateAccountDropdowns();
         }
-        await loadAccountsGrid();
-        await updateAccountDropdowns();
     } catch (e) {
         alert('Gagal menyimpan rekening: ' + e.message);
+    }
+});
+
+// Category form submit
+document.getElementById('category-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('category-name').value.trim();
+    const type = document.querySelector('input[name="category-type"]:checked').value;
+    const payload = { name, type };
+    
+    try {
+        await api('/api/categories', { method: 'POST', body: JSON.stringify(payload) });
+        closeCategoryFormModal();
+        await loadCategoriesSettings();
+        await updateCategoryDropdown();
+    } catch (e) {
+        alert('Gagal menambah kategori: ' + e.message);
     }
 });
 
@@ -458,6 +511,34 @@ async function loadAccountsSettings() {
     }
 }
 
+async function loadCategoriesSettings() {
+    try {
+        const categories = await api('/api/categories');
+        const tbody = document.getElementById('categories-settings-body');
+        
+        if (categories.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Belum ada kategori</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = categories.map(cat => {
+            const typeLabel = cat.type === 'income' ? 'Pemasukan' : 'Pengeluaran';
+            const typeBadge = cat.type === 'income' ? 'badge-income' : 'badge-expense';
+            return `
+                <tr>
+                    <td><strong>${cat.name}</strong></td>
+                    <td><span class="badge ${typeBadge}">${typeLabel}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCategory(${cat.id})">Hapus</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    } catch (e) {
+        console.warn('Failed to load categories settings', e);
+    }
+}
+
 window.editAccount = function(id, name) {
     document.getElementById('account-form-title').textContent = 'Edit Rekening';
     document.getElementById('account-id').value = id;
@@ -470,11 +551,146 @@ window.deleteAccount = async function(id) {
     try {
         await api('/api/accounts/' + id, { method: 'DELETE' });
         await loadAccountsSettings();
+        await loadAccountsGrid();
         await updateAccountDropdowns();
     } catch (e) {
         alert('Gagal menghapus: ' + e.message);
     }
 };
+
+window.deleteCategory = async function(id) {
+    if (!confirm('Hapus kategori ini?')) return;
+    try {
+        await api('/api/categories/' + id, { method: 'DELETE' });
+        await loadCategoriesSettings();
+        await updateCategoryDropdown();
+    } catch (e) {
+        alert('Gagal menghapus: ' + e.message);
+    }
+};
+
+// ─── Forced Setup Modal (First-time user) ───
+let forcedAccounts = [];
+let forcedCategories = [];
+
+function showForcedSetupModal() {
+    forcedAccounts = [];
+    forcedCategories = [];
+    renderForcedAccounts();
+    renderForcedCategories();
+    document.getElementById('forced-sheet-1').style.display = 'block';
+    document.getElementById('forced-sheet-2').style.display = 'none';
+    forcedSetupModal.style.display = 'flex';
+}
+
+// Sheet 1: Accounts
+document.getElementById('btn-add-forced-account').addEventListener('click', () => {
+    const name = prompt('Nama rekening:');
+    if (name && name.trim()) {
+        forcedAccounts.push({ name: name.trim() });
+        renderForcedAccounts();
+    }
+});
+
+function renderForcedAccounts() {
+    const container = document.getElementById('forced-accounts-list');
+    if (forcedAccounts.length === 0) {
+        container.innerHTML = '<p class="empty-state">Belum ada rekening ditambahkan</p>';
+    } else {
+        container.innerHTML = forcedAccounts.map((acc, i) => `
+            <div class="forced-item">
+                <span>${acc.name}</span>
+                <div class="item-actions">
+                    <button class="btn btn-sm btn-danger" onclick="removeForcedAccount(${i})">Hapus</button>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+window.removeForcedAccount = function(index) {
+    forcedAccounts.splice(index, 1);
+    renderForcedAccounts();
+};
+
+document.getElementById('btn-forced-next').addEventListener('click', () => {
+    if (forcedAccounts.length === 0) {
+        alert('Minimal tambah 1 rekening terlebih dahulu.');
+        return;
+    }
+    document.getElementById('forced-sheet-1').style.display = 'none';
+    document.getElementById('forced-sheet-2').style.display = 'block';
+});
+
+// Sheet 2: Categories
+document.getElementById('btn-add-forced-category').addEventListener('click', () => {
+    const name = document.getElementById('forced-category-name').value.trim();
+    const type = document.querySelector('input[name="forced-cat-type"]:checked').value;
+    if (!name) {
+        alert('Nama kategori wajib diisi.');
+        return;
+    }
+    forcedCategories.push({ name, type });
+    document.getElementById('forced-category-name').value = '';
+    renderForcedCategories();
+});
+
+function renderForcedCategories() {
+    const container = document.getElementById('forced-categories-list');
+    if (forcedCategories.length === 0) {
+        container.innerHTML = '<p class="empty-state">Belum ada kategori ditambahkan</p>';
+    } else {
+        container.innerHTML = forcedCategories.map((cat, i) => {
+            const typeLabel = cat.type === 'income' ? 'Pemasukan' : 'Pengeluaran';
+            const typeBadge = cat.type === 'income' ? 'badge-income' : 'badge-expense';
+            return `
+                <div class="forced-item">
+                    <span>${cat.name} <span class="badge ${typeBadge}">${typeLabel}</span></span>
+                    <div class="item-actions">
+                        <button class="btn btn-sm btn-danger" onclick="removeForcedCategory(${i})">Hapus</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+}
+
+window.removeForcedCategory = function(index) {
+    forcedCategories.splice(index, 1);
+    renderForcedCategories();
+};
+
+document.getElementById('btn-forced-back').addEventListener('click', () => {
+    document.getElementById('forced-sheet-2').style.display = 'none';
+    document.getElementById('forced-sheet-1').style.display = 'block';
+});
+
+document.getElementById('btn-forced-selesai').addEventListener('click', async () => {
+    if (forcedCategories.length === 0) {
+        alert('Minimal tambah 1 kategori terlebih dahulu.');
+        return;
+    }
+    
+    try {
+        // Save all accounts
+        for (const acc of forcedAccounts) {
+            await api('/api/accounts', { method: 'POST', body: JSON.stringify(acc) });
+        }
+        // Save all categories
+        for (const cat of forcedCategories) {
+            await api('/api/categories', { method: 'POST', body: JSON.stringify(cat) });
+        }
+        
+        forcedSetupModal.style.display = 'none';
+        forcedAccounts = [];
+        forcedCategories = [];
+        await renderAll();
+        await updateAccountDropdowns();
+        await updateCategoryDropdown();
+    } catch (e) {
+        alert('Gagal menyimpan setup: ' + e.message);
+    }
+});
 
 // ─── Accounts Grid (Dashboard) ───
 async function loadAccountsGrid() {
@@ -484,8 +700,8 @@ async function loadAccountsGrid() {
         
         if (accounts.length === 0) {
             grid.innerHTML = '<div class="empty-state">Belum ada rekening. Buka Pengaturan untuk menambah.</div>';
-            // Show forced modal (cannot close without creating at least 1 account)
-            showForcedAccountModal();
+            // Show forced setup modal
+            showForcedSetupModal();
             updateAccountDropdowns();
             return;
         }
@@ -517,6 +733,7 @@ async function loadAccountsGrid() {
 // ─── Render All ───
 async function renderAll() {
     await Promise.all([loadSummary(), loadTransactions(), loadDebts(), loadAccountsGrid()]);
+    await updateCategoryDropdown();
 }
 
 // ─── Init ───

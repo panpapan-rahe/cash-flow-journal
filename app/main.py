@@ -314,5 +314,35 @@ def delete_account(acc_id):
     db.close()
     return jsonify({"ok": True})
 
+# ─── API: Categories CRUD ───────────────────────────────────────
+@app.route("/api/categories", methods=["POST"])
+def create_category():
+    if not g.user:
+        return jsonify({"error": "Unauthorized"}), 401
+    data = request.get_json()
+    name = data.get("name", "").strip()
+    cat_type = data.get("type", "")
+    if not name or cat_type not in ("income", "expense"):
+        return jsonify({"error": "Nama dan tipe kategori wajib diisi"}), 400
+    db = get_db(g.user["id"])
+    try:
+        db.execute("INSERT INTO categories (name, type) VALUES (?, ?)", (name, cat_type))
+        db.commit()
+    except Exception as e:
+        db.close()
+        return jsonify({"error": str(e)}), 400
+    db.close()
+    return jsonify({"ok": True})
+
+@app.route("/api/categories/<int:cat_id>", methods=["DELETE"])
+def delete_category(cat_id):
+    if not g.user:
+        return jsonify({"error": "Unauthorized"}), 401
+    db = get_db(g.user["id"])
+    db.execute("DELETE FROM categories WHERE id = ?", (cat_id,))
+    db.commit()
+    db.close()
+    return jsonify({"ok": True})
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8000)
