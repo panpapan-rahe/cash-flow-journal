@@ -33,13 +33,7 @@
             {% endif %}
             <input type="hidden" name="action" id="action" value="login">
             <button type="submit" class="btn btn-primary" id="btn-login">Masuk</button>
-            {% if user_count == 0 %}
-                <button type="submit" class="btn btn-secondary" id="btn-register" onclick="document.getElementById('action').value='register'; document.getElementById('btn-login').style.display='none'; document.getElementById('btn-register').textContent='Buat Akun'; return false;">
-                    Buat Akun Baru
-                </button>
-            {% else %}
-                <button type="submit" class="btn btn-secondary" id="btn-register" onclick="document.getElementById('action').value='register'; ">Daftar Akun Baru</button>
-            {% endif %}
+            <button type="submit" class="btn btn-secondary" id="btn-register" onclick="document.getElementById('action').value='register';">Daftar Akun Baru</button>
         </form>
     </div>
 </body>
