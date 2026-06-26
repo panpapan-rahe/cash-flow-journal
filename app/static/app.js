@@ -113,15 +113,22 @@ async function updateCategoryDatalist() {
     }
 }
 
-async function updateAccountDatalist() {
+async function updateAccountDropdowns() {
     try {
         const accounts = await api('/api/accounts');
-        const datalist = document.getElementById('account-list');
-        datalist.innerHTML = accounts
-            .map(a => `<option value="${a.name}">`)
-            .join('');
+        const txSelect = document.getElementById('tx-account');
+        const toSelect = document.getElementById('tx-to-account');
+        
+        const options = accounts.map(a => `<option value="${a.name}">${a.name}</option>`).join('');
+        
+        if (txSelect) {
+            txSelect.innerHTML = '<option value="">-- Pilih Akun --</option>' + options;
+        }
+        if (toSelect) {
+            toSelect.innerHTML = '<option value="">-- Pilih Akun Tujuan --</option>' + options;
+        }
     } catch (e) {
-        console.warn('Failed to load accounts', e);
+        console.warn('Failed to load account dropdowns', e);
     }
 }
 
@@ -133,7 +140,7 @@ async function loadTransactions() {
         allTransactions = await api('/api/transactions');
         renderTransactions(allTransactions);
         updateCategoryDatalist();
-        updateAccountDatalist();
+        updateAccountDropdowns();
     } catch (e) {
         console.warn('Failed to load transactions', e);
     }
@@ -373,7 +380,7 @@ function closeForcedAccountModal() {
             forcedAccountModal.style.display = 'none';
             forcedAccountModal.classList.remove('forced');
             loadAccountsGrid();
-            updateAccountDatalist();
+            updateAccountDropdowns();
         } else {
             alert('Minimal 1 rekening harus dibuat terlebih dahulu.');
         }
@@ -404,10 +411,10 @@ document.getElementById('account-form').addEventListener('submit', async (e) => 
         } else {
             closeAccountFormModal();
             await loadAccountsSettings();
-            await updateAccountDatalist();
+            await updateAccountDropdowns();
         }
         await loadAccountsGrid();
-        await updateAccountDatalist();
+        await updateAccountDropdowns();
     } catch (e) {
         alert('Gagal menyimpan rekening: ' + e.message);
     }
@@ -463,7 +470,7 @@ window.deleteAccount = async function(id) {
     try {
         await api('/api/accounts/' + id, { method: 'DELETE' });
         await loadAccountsSettings();
-        await updateAccountDatalist();
+        await updateAccountDropdowns();
     } catch (e) {
         alert('Gagal menghapus: ' + e.message);
     }
@@ -479,6 +486,7 @@ async function loadAccountsGrid() {
             grid.innerHTML = '<div class="empty-state">Belum ada rekening. Buka Pengaturan untuk menambah.</div>';
             // Show forced modal (cannot close without creating at least 1 account)
             showForcedAccountModal();
+            updateAccountDropdowns();
             return;
         }
 
