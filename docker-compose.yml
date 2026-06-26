@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  cashflow:
+    build: .
+    container_name: cashflow-web
+    ports:
+      - "9104:8000"
+    volumes:
+      - ./app:/app/app
+      - ./data:/app/data
+    restart: unless-stopped
