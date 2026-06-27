@@ -739,7 +739,7 @@ body {
     padding: 24px;
     width: calc(100vw - 24px);
     height: calc(100vh - 24px);
-    max-width: 400px;
+    max-width: none;
     box-shadow: 0 8px 32px rgba(61, 50, 41, 0.15);
     display: flex;
     flex-direction: column;
@@ -747,11 +747,11 @@ body {
 }
 
 .modal-lg {
-    max-width: 700px;
+    max-width: none;
 }
 
 .modal-xl {
-    max-width: 1000px;
+    max-width: none;
 }
 
 /* Flex: sidebar kiri + content kanan */
