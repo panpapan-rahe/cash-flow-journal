@@ -205,6 +205,74 @@ body {
     margin-bottom: 20px;
 }
 
+.transaction-form {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+}
+
+.transaction-form.mode-standard {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+        "date type category"
+        "account amount admin"
+        "desc desc submit";
+}
+
+.transaction-form.mode-transfer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+        "date type"
+        "account toaccount"
+        "amount admin"
+        "desc submit";
+}
+
+.transaction-form .tx-date-group { grid-area: date; }
+.transaction-form .tx-type-group { grid-area: type; }
+.transaction-form .tx-category-group { grid-area: category; }
+.transaction-form .tx-account-group { grid-area: account; }
+.transaction-form .tx-to-account-group { grid-area: toaccount; }
+.transaction-form .tx-amount-group { grid-area: amount; }
+.transaction-form .tx-admin-group { grid-area: admin; }
+.transaction-form .tx-desc-group { grid-area: desc; }
+.transaction-form .tx-submit-group { grid-area: submit; align-self: end; }
+
+.transaction-form .form-group,
+.transaction-form .btn {
+    min-width: 0;
+}
+
+.transaction-form.mode-standard .tx-to-account-group {
+    display: none !important;
+}
+
+.transaction-form.mode-transfer .tx-category-group {
+    display: none !important;
+}
+
+.transaction-form.mode-standard .tx-account-group,
+.transaction-form.mode-standard .tx-amount-group,
+.transaction-form.mode-standard .tx-admin-group,
+.transaction-form.mode-standard .tx-desc-group,
+.transaction-form.mode-standard .tx-submit-group {
+    display: flex;
+}
+
+.transaction-form.mode-transfer .tx-account-group,
+.transaction-form.mode-transfer .tx-to-account-group,
+.transaction-form.mode-transfer .tx-amount-group,
+.transaction-form.mode-transfer .tx-admin-group,
+.transaction-form.mode-transfer .tx-desc-group,
+.transaction-form.mode-transfer .tx-submit-group {
+    display: flex;
+}
+
+.transaction-submit {
+    height: 40px;
+    white-space: nowrap;
+}
+
 .form-inline {
     display: flex;
     flex-wrap: wrap;
@@ -319,6 +387,113 @@ body {
     background: #A8655A;
 }
 
+.btn-delete-circle {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--danger);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+.btn-delete-circle:hover {
+    background: #A8655A;
+}
+
+.btn-delete-circle:active {
+    transform: scale(0.96);
+}
+
+.btn-delete-circle::before,
+.btn-delete-circle::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 2px;
+    background: rgba(255,255,255,0.96);
+    border-radius: 2px;
+}
+
+.btn-delete-circle {
+    position: relative;
+}
+
+.btn-delete-circle::before { transform: rotate(45deg); }
+.btn-delete-circle::after { transform: rotate(-45deg); }
+
+.btn-circle {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    aspect-ratio: 1 / 1;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.btn-circle:active {
+    transform: scale(0.96);
+}
+
+.btn-circle-primary { background: var(--accent); position: relative; }
+.btn-circle-primary:hover { background: #9A7209; }
+.btn-circle-primary::before,
+.btn-circle-primary::after {
+    content: '';
+    position: absolute;
+    background: rgba(255,255,255,0.96);
+    border-radius: 2px;
+}
+.btn-circle-primary::before {
+    width: 12px;
+    height: 2px;
+}
+.btn-circle-primary::after {
+    width: 2px;
+    height: 12px;
+}
+
+.btn-circle-success { background: var(--success); position: relative; }
+.btn-circle-success:hover { background: #5A7A4A; }
+.btn-circle-success::before {
+    content: '';
+    position: absolute;
+    width: 7px;
+    height: 12px;
+    border-right: 2px solid rgba(255,255,255,0.96);
+    border-bottom: 2px solid rgba(255,255,255,0.96);
+    transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.btn-circle-danger { background: var(--danger); position: relative; }
+.btn-circle-danger:hover { background: #A8655A; }
+.btn-circle-danger::before,
+.btn-circle-danger::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 2px;
+    background: rgba(255,255,255,0.96);
+    border-radius: 2px;
+}
+.btn-circle-danger::before { transform: rotate(45deg); }
+.btn-circle-danger::after { transform: rotate(-45deg); }
+
+
 .btn-success {
     background: var(--success);
     color: #fff;
@@ -374,6 +549,12 @@ body {
     vertical-align: middle;
 }
 
+.data-table td:last-child {
+    text-align: center;
+    width: 1%;
+    white-space: nowrap;
+}
+
 .data-table tbody tr:hover {
     background: var(--card-hover);
 }
@@ -409,8 +590,14 @@ body {
     color: var(--info);
 }
 
+.badge-opening {
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
 .amount-income { color: var(--success); font-weight: 600; }
 .amount-expense { color: var(--danger); font-weight: 600; }
+.amount-admin { color: var(--muted); font-weight: 500; }
 .amount-transfer { color: var(--info); font-weight: 600; }
 
 /* ─── Alerts ─── */
@@ -436,15 +623,16 @@ body {
 /* ─── Accounts Grid ─── */
 .accounts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
 }
 
 .account-card {
+    position: relative;
     background: var(--bg);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-sm);
-    padding: 14px 16px;
+    padding: 12px 14px;
     transition: border-color 0.2s;
 }
 
@@ -452,15 +640,35 @@ body {
     border-color: var(--accent-soft);
 }
 
+.account-card-empty,
+.account-card-empty:hover {
+    background: linear-gradient(180deg, #A87400 0%, #8F6400 100%);
+    border: 1px solid #7A5600;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+    min-height: 80px;
+}
+
+.account-card .btn-detail {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 500;
+}
+
 .account-card .account-name {
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 700;
     color: var(--text);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
+    padding-right: 50px;
 }
 
 .account-card .account-balance {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--accent);
 }
@@ -469,12 +677,46 @@ body {
     color: var(--danger);
 }
 
-.account-card .account-stats {
+/* ─── Account Detail Modal ─── */
+.detail-summary {
     display: flex;
-    gap: 12px;
-    margin-top: 8px;
-    font-size: 0.75rem;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px 0;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--border);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-row-total {
+    font-weight: 600;
+    font-size: 1rem;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 4px;
+}
+
+.detail-label {
     color: var(--text-light);
+}
+
+.detail-value {
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+}
+
+.detail-row-total .detail-value {
+    color: var(--accent);
+    font-size: 1.1rem;
 }
 
 /* ─── Modal ─── */
@@ -669,7 +911,8 @@ body {
     flex-wrap: wrap;
 }
 
-.forced-add-category input {
+.forced-add-category input,
+.forced-add-category select {
     flex: 1;
     min-width: 150px;
     padding: 8px 12px;
@@ -728,6 +971,10 @@ body {
 @media (max-width: 768px) {
     .container { padding: 16px; }
     .summary-cards { grid-template-columns: repeat(2, 1fr); }
+    .transaction-row-3,
+    .transaction-row-2 { grid-template-columns: 1fr; }
+    .transaction-row-2 { align-items: stretch; }
+    .transaction-submit { width: 100%; }
     .form-inline { flex-direction: column; }
     .form-group { min-width: 100%; }
     .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }

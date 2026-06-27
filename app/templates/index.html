@@ -19,31 +19,8 @@
     </header>
 
     <main class="container">
-        <!-- Summary Cards -->
-        <section class="summary-cards">
-            <div class="card card-income">
-                <div class="card-label">Pemasukan</div>
-                <div class="card-value" id="summary-income">Rp 0</div>
-            </div>
-            <div class="card card-expense">
-                <div class="card-label">Pengeluaran</div>
-                <div class="card-value" id="summary-expense">Rp 0</div>
-            </div>
-            <div class="card card-balance">
-                <div class="card-label">Saldo</div>
-                <div class="card-value" id="summary-balance">Rp 0</div>
-            </div>
-            <div class="card card-debt">
-                <div class="card-label">Hutang Aktif</div>
-                <div class="card-value" id="summary-debt">Rp 0</div>
-            </div>
-        </section>
-
         <!-- Accounts Overview -->
         <section class="card">
-            <div class="section-header">
-                <h2>Rekening</h2>
-            </div>
             <div class="accounts-grid" id="accounts-grid">
                 <div class="empty-state">Belum ada rekening</div>
             </div>
@@ -51,9 +28,13 @@
 
         <!-- Form Input -->
         <section class="card form-section">
-            <h2>Transaksi Baru</h2>
-            <form id="transaction-form" class="form-inline">
-                <div class="form-group">
+            <h2>Riwayat Transaksi</h2>
+            <form id="transaction-form" class="transaction-form mode-standard">
+                <div class="form-group tx-date-group">
+                    <label for="tx-date">Tanggal</label>
+                    <input type="date" id="tx-date" required>
+                </div>
+                <div class="form-group tx-type-group">
                     <label for="tx-type">Tipe</label>
                     <select id="tx-type" required>
                         <option value="income">Pemasukan</option>
@@ -61,33 +42,33 @@
                         <option value="transfer">Mutasi</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="tx-amount">Nominal</label>
-                    <input type="number" id="tx-amount" min="1" step="any" required placeholder="0">
-                </div>
-                <div class="form-group">
+                <div class="form-group tx-category-group">
                     <label for="tx-category">Kategori</label>
                     <select id="tx-category" required>
                         <option value="">-- Pilih Kategori --</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="tx-account">Akun</label>
+                <div class="form-group tx-account-group">
+                    <label for="tx-account" id="tx-account-label">Akun</label>
                     <select id="tx-account" required></select>
                 </div>
-                <div class="form-group" id="to-account-group" style="display:none">
-                    <label for="tx-to-account">Ke Akun</label>
-                    <select id="tx-to-account" required></select>
+                <div class="form-group tx-to-account-group" id="to-account-group" style="display:none">
+                    <label for="tx-to-account" id="tx-to-account-label">Ke Akun</label>
+                    <select id="tx-to-account"></select>
                 </div>
-                <div class="form-group">
-                    <label for="tx-date">Tanggal</label>
-                    <input type="date" id="tx-date" required>
+                <div class="form-group tx-amount-group">
+                    <label for="tx-amount">Nominal</label>
+                    <input type="number" id="tx-amount" min="1" step="any" required placeholder="0">
                 </div>
-                <div class="form-group">
+                <div class="form-group tx-admin-group">
+                    <label for="tx-admin">Biaya Admin</label>
+                    <input type="number" id="tx-admin" min="0" step="any" placeholder="0">
+                </div>
+                <div class="form-group tx-desc-group">
                     <label for="tx-desc">Keterangan</label>
                     <input type="text" id="tx-desc" placeholder="Opsional">
                 </div>
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" class="btn btn-primary transaction-submit tx-submit-group">Simpan</button>
             </form>
         </section>
 
@@ -107,16 +88,17 @@
                     <thead>
                         <tr>
                             <th>Tanggal</th>
-                            <th>Tipe</th>
                             <th>Kategori</th>
-                            <th>Akun</th>
-                            <th>Nominal</th>
+                            <th>Rekening</th>
+                            <th>Pemasukan</th>
+                            <th>Pengeluaran</th>
+                            <th>Admin</th>
                             <th>Keterangan</th>
-                            <th></th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="transactions-body">
-                        <tr><td colspan="7" class="empty-state">Belum ada transaksi</td></tr>
+                        <tr><td colspan="8" class="empty-state">Belum ada transaksi</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -126,13 +108,14 @@
         <section class="card">
             <div class="section-header">
                 <h2>Hutang</h2>
-                <button class="btn btn-sm btn-primary" id="btn-add-debt">+ Tambah Hutang</button>
+                <button class="btn btn-circle btn-circle-primary" id="btn-add-debt" aria-label="Tambah Hutang" title="Tambah Hutang"></button>
             </div>
             <div class="table-wrapper">
                 <table class="data-table" id="debts-table">
                     <thead>
                         <tr>
-                            <th>Nama</th>
+                            <th>Kebutuhan</th>
+                            <th>Dari Rekening</th>
                             <th>Total</th>
                             <th>Dibayar</th>
                             <th>Sisa</th>
@@ -154,12 +137,20 @@
             <h3>Tambah Hutang</h3>
             <form id="debt-form">
                 <div class="form-group">
-                    <label>Nama Pihutang</label>
+                    <label>Kebutuhan Hutang</label>
                     <input type="text" id="debt-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Dari Rekening</label>
+                    <select id="debt-account" required></select>
                 </div>
                 <div class="form-group">
                     <label>Total Pinjaman</label>
                     <input type="number" id="debt-amount" min="1" step="any" required>
+                </div>
+                <div class="form-group">
+                    <label>Biaya Admin</label>
+                    <input type="number" id="debt-admin" min="0" step="any" placeholder="0">
                 </div>
                 <div class="form-group">
                     <label>Keterangan</label>
@@ -180,8 +171,16 @@
             <form id="pay-form">
                 <input type="hidden" id="pay-debt-id">
                 <div class="form-group">
+                    <label>Dari Rekening</label>
+                    <select id="pay-account" required></select>
+                </div>
+                <div class="form-group">
                     <label>Jumlah Bayar</label>
                     <input type="number" id="pay-amount" min="1" step="any" required>
+                </div>
+                <div class="form-group">
+                    <label>Biaya Admin</label>
+                    <input type="number" id="pay-admin" min="0" step="any" placeholder="0">
                 </div>
                 <div class="form-group">
                     <label>Catatan</label>
@@ -202,7 +201,7 @@
             <div class="modal-settings">
                 <div class="settings-nav">
                     <h3>Pengaturan</h3>
-                    <nav class="settings-nav-item active" data-panel="accounts">Rekening</nav>
+                    <nav class="settings-nav-item active" data-panel="accounts">Akun</nav>
                     <nav class="settings-nav-item" data-panel="categories">Kategori</nav>
                     <div class="settings-nav-footer">
                         <button class="btn btn-secondary btn-sm" onclick="closeSettingsModal()">Tutup</button>
@@ -212,24 +211,25 @@
                     <!-- Accounts Panel -->
                     <div class="settings-panel active" id="panel-accounts">
                         <div class="section-header">
-                            <h2>Rekening</h2>
+                            <h2>Akun</h2>
                             <button class="btn btn-sm btn-primary" id="btn-add-account">+ Tambah Rekening</button>
                         </div>
                         <div class="table-wrapper">
                             <table class="data-table" id="accounts-table">
                                 <thead>
                                     <tr>
-                                        <th>Nama Rekening</th>
+                                        <th>Rekening</th>
+                                        <th>Saldo Awal</th>
                                         <th>Pemasukan</th>
                                         <th>Pengeluaran</th>
-                                        <th>Mutasi Keluar</th>
-                                        <th>Mutasi Masuk</th>
+                                        <th>Transfer Keluar</th>
+                                        <th>Transfer Masuk</th>
                                         <th>Saldo</th>
                                         <th>Aksi</th>
                                     </tr>
-                                </thead>
+
                                 <tbody id="accounts-settings-body">
-                                    <tr><td colspan="7" class="empty-state">Belum ada rekening</td></tr>
+                                    <tr><td colspan="8" class="empty-state">Belum ada rekening</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -271,6 +271,10 @@
                     <label>Nama Rekening</label>
                     <input type="text" id="account-name" required placeholder="contoh: BCA, Mandiri, Cash">
                 </div>
+                <div class="form-group">
+                    <label>Saldo Awal</label>
+                    <input type="number" id="account-opening-balance" min="0" step="any" value="0" placeholder="0">
+                </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" id="btn-cancel-account" onclick="closeAccountFormModal()">Batal</button>
                     <button type="submit" class="btn btn-primary">Simpan</button>
@@ -311,14 +315,18 @@
     </div>
 
     <!-- Modal: Forced Setup (First-time) -->
-    <div class="modal-overlay" id="forced-setup-modal" style="display:none">
+    <div class="modal-overlay" id="forced-setup-modal" style="display: {{ 'flex' if needs_setup else 'none' }}">
         <div class="modal">
             <!-- Sheet 1: Rekening -->
             <div class="forced-sheet" id="forced-sheet-1">
                 <h3>Tambah Rekening Pertama</h3>
-                <p class="hint">Minimal 1 rekening untuk melanjutkan</p>
+                <p class="hint">Minimal 1 rekening untuk melanjutkan. Saldo awal opsional.</p>
                 <div id="forced-accounts-list"></div>
-                <button class="btn btn-sm btn-secondary btn-block" id="btn-add-forced-account">+ Tambah Rekening</button>
+                <div class="forced-add-category">
+                    <input type="text" id="forced-account-name" placeholder="Nama rekening" value="BCA">
+                    <input type="number" id="forced-account-opening" min="0" step="any" placeholder="Saldo awal" value="0">
+                    <button class="btn btn-sm btn-primary" id="btn-add-forced-account">+ Tambah</button>
+                </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-primary" id="btn-forced-next">Lanjut →</button>
                 </div>
@@ -344,6 +352,24 @@
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" id="btn-forced-back">← Kembali</button>
+                    <button type="button" class="btn btn-primary" id="btn-forced-next-debt">Lanjut ke Hutang Bawaan →</button>
+                </div>
+            </div>
+
+            <!-- Sheet 3: Hutang Bawaan -->
+            <div class="forced-sheet" id="forced-sheet-3" style="display:none">
+                <h3>Hutang Bawaan</h3>
+                <p class="hint">Opsional. Jika tidak ada hutang bawaan, langsung klik Selesai.</p>
+                <div id="forced-opening-debts-list"></div>
+                <div class="forced-add-category">
+                    <input type="text" id="forced-opening-debt-name" placeholder="Nama hutang" value="Hutang Bawaan">
+                    <select id="forced-opening-debt-account"></select>
+                    <input type="number" id="forced-opening-debt-amount" min="1" step="any" placeholder="Jumlah hutang">
+                    <input type="text" id="forced-opening-debt-desc" placeholder="Keterangan (opsional)">
+                    <button class="btn btn-sm btn-primary" id="btn-add-forced-opening-debt">+ Tambah</button>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="btn-forced-back-debt">← Kembali</button>
                     <button type="button" class="btn btn-primary" id="btn-forced-selesai">Selesai</button>
                 </div>
             </div>
@@ -351,5 +377,16 @@
     </div>
 
     <script src="/static/app.js"></script>
+
+    <!-- Modal: Account Detail -->
+    <div class="modal-overlay" id="account-detail-modal" style="display:none">
+        <div class="modal">
+            <h3 id="account-detail-title">Detail Rekening</h3>
+            <div id="account-detail-body"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeAccountDetailModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
