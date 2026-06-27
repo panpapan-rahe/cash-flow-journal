@@ -719,7 +719,7 @@ body {
     font-size: 1.1rem;
 }
 
-/* ─── Modal ─── */
+/* Modal overlay fullscreen */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -729,6 +729,7 @@ body {
     justify-content: center;
     z-index: 1000;
     backdrop-filter: blur(2px);
+    padding: 12px;
 }
 
 .modal {
@@ -736,9 +737,13 @@ body {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 24px;
-    width: 100%;
+    width: calc(100vw - 24px);
+    height: calc(100vh - 24px);
     max-width: 400px;
     box-shadow: 0 8px 32px rgba(61, 50, 41, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .modal-lg {
@@ -746,23 +751,26 @@ body {
 }
 
 .modal-xl {
-    max-width: 800px;
+    max-width: 1000px;
 }
 
-/* ─── Settings Modal with Vertical Nav ─── */
+/* Flex: sidebar kiri + content kanan */
 .modal-settings {
     display: flex;
-    min-height: 400px;
+    flex: 1;
+    min-height: 0;
 }
-
+/* Sidebar 180px fixed */
 .settings-nav {
     width: 180px;
+    flex-shrink: 0;
     background: var(--bg);
     border-right: 1px solid var(--border);
     padding: 20px 0;
     display: flex;
     flex-direction: column;
     border-radius: var(--radius) 0 0 var(--radius);
+    overflow-y: auto;
 }
 
 .settings-nav h3 {
@@ -799,10 +807,12 @@ body {
     padding: 16px 20px;
     border-top: 1px solid var(--border-light);
 }
-
+/* Content area fleksibel */
 .settings-content {
     flex: 1;
     padding: 20px;
+    overflow-y: auto;
+    min-width: 0;
 }
 
 .settings-panel {
