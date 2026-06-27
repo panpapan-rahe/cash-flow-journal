@@ -363,6 +363,17 @@ btnSettings.addEventListener('click', async () => {
     await loadAccountsSettings();
 });
 
+document.getElementById('btn-delete-account').addEventListener('click', async () => {
+    if (!confirm('Hapus akun ini? Semua data transaksi, hutang, dan rekening akan ikut terhapus.')) return;
+    if (!confirm('Yakin? Tindakan ini tidak bisa dibatalkan.')) return;
+    try {
+        await api('/api/user', { method: 'DELETE' });
+        window.location.href = '/login';
+    } catch (e) {
+        alert('Gagal menghapus akun: ' + e.message);
+    }
+});
+
 btnAddAccount.addEventListener('click', () => {
     document.getElementById('account-form-title').textContent = 'Tambah Rekening';
     document.getElementById('account-id').value = '';

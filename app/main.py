@@ -5,7 +5,7 @@ from flask import Flask, request, session, redirect, url_for, render_template, j
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.db import get_db, get_db_path
 import sqlite3
-from app.models import create_user, authenticate, user_exists, get_user_count
+from app.models import create_user, authenticate, user_exists, get_user_count, delete_user
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "cashflow-fixed-secret-key-2026")
@@ -84,6 +84,19 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for("login"))
+
+# ─── API: User ──────────────────────────────────────────────────
+@app.route("/api/user", methods=["DELETE"])
+def delete_user_api():
+    if not g.user:
+        return jsonify({"error": "Unauthorized"}), 401
+    user_id = g.user["id"]
+    try:
+        delete_user(user_id)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    session.clear()
+    return jsonify({"ok": True})
 
 # ─── Protected Routes ───────────────────────────────────────────
 @app.route("/")

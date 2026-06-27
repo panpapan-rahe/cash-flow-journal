@@ -56,3 +56,25 @@ def get_user_count() -> int:
     row = conn.execute("SELECT COUNT(*) as cnt FROM users").fetchone()
     conn.close()
     return row["cnt"]
+
+def get_db_path(user_id: int) -> str:
+    return os.path.join(DATA_DIR, f"user_{user_id}.db")
+
+def delete_user(user_id: int) -> bool:
+    conn = get_users_db()
+    try:
+        row = conn.execute("SELECT id FROM users WHERE id = ?", (user_id,)).fetchone()
+        if not row:
+            return False
+        conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
+    finally:
+        conn.close()
+
+    db_path = get_db_path(user_id)
+    if os.path.exists(db_path):
+        try:
+            os.remove(db_path)
+        except OSError:
+            pass
+    return True
