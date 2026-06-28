@@ -1,4 +1,4 @@
-# Cashflow Journal
+# Cashflow Journal v1.0.0
 
 Catatan keuangan personal berbasis web: dashboard single-page untuk mencatat pemasukan, pengeluaran, mutasi, dan hutang. Dibangun dengan **Flask + SQLite per-user** dan di-deploy via **Docker** di port `9102`.
 
@@ -12,7 +12,9 @@ Catatan keuangan personal berbasis web: dashboard single-page untuk mencatat pem
 - Pengelolaan hutang biasa dan **hutang bawaan** (opsional saat first-time setup)
 - First-time onboarding flow: **Rekening + Saldo Awal → Kategori → Hutang Bawaan → Dashboard**
 - Account detail modal: Saldo Saat Ini, Saldo Awal, Saldo Masuk, Saldo Keluar, Mutasi Masuk, Mutasi Keluar
-- Tema warm minimalis, tanpa ikon pada sebagian besar UI
+- Pengaturan: kelola akun, kategori, dan hapus akun sendiri
+- Tema warm minimalis, modal fullscreen (viewport - 24px)
+- Favicon 🏦 bank
 - Portable: cukup `docker compose up -d` di server baru
 
 ## Stack
@@ -105,6 +107,9 @@ Accounts & Categories:
 - `POST /api/categories`
 - `DELETE /api/categories/<id>`
 
+User:
+- `DELETE /api/user` — hapus akun sendiri (semua data user ikut terhapus)
+
 Summary:
 - `GET /api/summary`
 
@@ -116,3 +121,4 @@ Summary:
 - Hutang biasa: otomatis membuat transaksi pengeluaran saat dibuat
 - Hutang bawaan: tidak membuat transaksi saat dibuat; saat dibayar, terkait kredit ke rekening terkait
 - Pembayaran hutang dari rekening berbeda tercatat sebagai satu transfer record
+- Hapus akun: menghapus user dari `users.db` + menghapus file `data/user_{id}.db`
