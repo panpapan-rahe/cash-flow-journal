@@ -126,6 +126,14 @@ body {
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--accent);
+    margin-bottom: 0;
+}
+
+.tagline {
+    font-size: 0.7rem;
+    font-style: italic;
+    color: var(--text-light);
+    font-weight: 400;
 }
 
 .topbar-right {
