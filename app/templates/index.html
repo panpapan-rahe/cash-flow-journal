@@ -132,61 +132,8 @@
             </div>
         </section>
 
-        <!-- Transaction Form + Table (Full Width, Stacked) -->
+        <!-- 5 Last Transactions Preview -->
         <section class="mb-6">
-            <div class="bg-white rounded-xl p-5 border border-warm-100 mb-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-base font-semibold text-gray-700">Tambah Transaksi</h3>
-                    <a href="/transactions" class="text-xs text-warm-500 hover:text-warm-700 font-medium">Lihat semua →</a>
-                </div>
-                <form id="transaction-form" class="space-y-3">
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                        <div>
-                            <label class="block text-sm text-gray-500 mb-1">Tanggal</label>
-                            <input type="date" id="tx-date" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-500 mb-1">Tipe</label>
-                            <select id="tx-type" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
-                                <option value="income">Pemasukan</option>
-                                <option value="expense">Pengeluaran</option>
-                                <option value="transfer">Mutasi</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-500 mb-1">Kategori</label>
-                            <select id="tx-category" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
-                                <option value="">-- Pilih Kategori --</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-500 mb-1">Akun</label>
-                            <select id="tx-account" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50"></select>
-                        </div>
-                    </div>
-                    <div id="to-account-group" style="display:none">
-                        <label class="block text-sm text-gray-500 mb-1">Ke Akun</label>
-                        <select id="tx-to-account" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 lg:max-w-[240px]"></select>
-                    </div>
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                        <div>
-                            <label class="block text-sm text-gray-500 mb-1">Nominal</label>
-                            <input type="number" id="tx-amount" min="1" step="any" required placeholder="0" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-500 mb-1">Admin</label>
-                            <input type="number" id="tx-admin" min="0" step="any" placeholder="0" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
-                        </div>
-                        <div class="col-span-2">
-                            <label class="block text-sm text-gray-500 mb-1">Keterangan</label>
-                            <input type="text" id="tx-desc" placeholder="Opsional" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
-                        </div>
-                    </div>
-                    <button type="submit" class="w-full lg:w-auto px-6 py-2.5 text-sm font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg transition">Simpan</button>
-                </form>
-            </div>
-
-            <!-- 5 Last Transactions -->
             <div class="bg-white rounded-xl p-5 border border-warm-100">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-base font-semibold text-gray-700">5 Transaksi Terakhir</h3>
