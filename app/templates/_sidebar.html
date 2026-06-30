@@ -1,0 +1,46 @@
+<!-- ── Sidebar ── -->
+<aside class="w-56 bg-white border-r border-warm-200 flex flex-col shrink-0">
+    <!-- Brand -->
+    <div class="px-5 py-4 border-b border-warm-100">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl">💰</span>
+            <div>
+                <h1 class="font-bold text-warm-700 text-sm leading-tight">Cashflow</h1>
+                <p class="text-xs text-gray-400 leading-tight">Know what to do</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 px-3 py-3 space-y-1 overflow-y-auto scroll-thin">
+        <!-- Dashboard -->
+        <a href="/dashboard"
+           class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2
+                  {% if request.path == '/' or request.path == '/dashboard' %}bg-warm-100 text-warm-700{% else %}text-gray-500 hover:bg-warm-50 hover:text-warm-600{% endif %}">
+            <span>📊</span> Dashboard
+        </a>
+
+        <!-- Transaksi -->
+        <a href="/transactions"
+           class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2
+                  {% if request.path == '/transactions' %}bg-warm-100 text-warm-700{% else %}text-gray-500 hover:bg-warm-50 hover:text-warm-600{% endif %}">
+            <span>💸</span> Transaksi
+        </a>
+
+        <!-- Pengaturan -->
+        <a href="/settings"
+           class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2
+                  {% if request.path == '/settings' %}bg-warm-100 text-warm-700{% else %}text-gray-500 hover:bg-warm-50 hover:text-warm-600{% endif %}">
+            <span>⚙️</span> Pengaturan
+        </a>
+    </nav>
+
+    <!-- User footer -->
+    <div class="px-3 py-3 border-t border-warm-100">
+        <div class="flex items-center gap-2 px-2 py-1.5">
+            <div class="w-9 h-9 rounded-full bg-warm-400 flex items-center justify-center text-white text-sm font-bold uppercase">{{ username[0] }}</div>
+            <span class="text-sm font-medium text-gray-600 truncate flex-1">{{ username }}</span>
+        </div>
+        <a href="/logout" class="mt-2 block text-center text-xs text-gray-400 hover:text-red-500 transition">Keluar</a>
+    </div>
+</aside>

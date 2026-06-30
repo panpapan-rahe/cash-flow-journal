@@ -34,43 +34,7 @@
 <body class="h-screen overflow-hidden">
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <aside class="w-[220px] bg-white border-r border-warm-100 flex flex-col flex-shrink-0">
-            <div class="px-4 py-4 border-b border-warm-100">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-warm-400 to-warm-600 flex items-center justify-center">
-                        <span class="text-white text-sm font-bold">C</span>
-                    </div>
-                    <div>
-                        <h1 class="font-bold text-warm-700 text-sm leading-tight">Cashflow</h1>
-                        <p class="text-xs text-gray-400 leading-tight">Know what to do</p>
-                    </div>
-                </div>
-            </div>
-            <nav class="flex-1 px-3 py-3 space-y-1 overflow-y-auto scroll-thin">
-                <a href="/dashboard" class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600">
-                    <span>📊</span> Dashboard
-                </a>
-                <a href="/transactions" class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600">
-                    <span>💸</span> Transaksi
-                </a>
-                <a href="/dashboard#accounts" class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600">
-                    <span>🏦</span> Rekening
-                </a>
-                <a href="/dashboard#categories" class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600">
-                    <span>🏷️</span> Kategori
-                </a>
-                <a href="/settings" class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 bg-warm-100 text-warm-700">
-                    <span>⚙️</span> Pengaturan
-                </a>
-            </nav>
-            <div class="px-3 py-3 border-t border-warm-100">
-                <div class="flex items-center gap-2 px-2 py-1.5">
-                    <div class="w-9 h-9 rounded-full bg-warm-400 flex items-center justify-center text-white text-sm font-bold uppercase">{{ username[0] }}</div>
-                    <span class="text-sm font-medium text-gray-600 truncate flex-1">{{ username }}</span>
-                    <a href="/logout" class="text-gray-400 hover:text-red-500 text-sm" title="Logout">⏻</a>
-                </div>
-            </div>
-        </aside>
+        {% include '_sidebar.html' %}
 
         <!-- Main -->
         <main class="flex-1 overflow-y-auto">
