@@ -146,7 +146,7 @@ function initSettingsFormHandlers() {
         });
     }
 
-    // Delete account button
+    // Delete account button (Accounts tab)
     const deleteAccountBtn = document.getElementById('btn-delete-account');
     if (deleteAccountBtn) {
         deleteAccountBtn.addEventListener('click', () => {
@@ -154,6 +154,15 @@ function initSettingsFormHandlers() {
         });
     }
 
+    // Delete account button (Extra tab)
+    const deleteAccountBtnExtra = document.getElementById('btn-delete-account-extra');
+    if (deleteAccountBtnExtra) {
+        deleteAccountBtnExtra.addEventListener('click', () => {
+            document.getElementById('delete-account-modal').style.display = 'flex';
+        });
+    }
+
+    // Confirm delete
     const confirmDeleteBtn = document.getElementById('confirm-delete-account');
     if (confirmDeleteBtn) {
         confirmDeleteBtn.addEventListener('click', async () => {
