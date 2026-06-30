@@ -74,20 +74,17 @@
 
         <!-- Nav -->
         <nav class="flex-1 px-3 py-3 space-y-1 overflow-y-auto scroll-thin">
-            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 bg-warm-100 text-warm-700" data-nav="dashboard">
+            <button class="nav-item w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 bg-warm-100 text-warm-700" data-nav="dashboard">
                 <span>📊</span> Dashboard
             </button>
-            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="transactions">
+            <a href="/transactions" class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600">
                 <span>💸</span> Transaksi
-            </button>
-            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="debts">
-                <span>📋</span> Hutang
-            </button>
-            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="accounts">
+            </a>
+            <button class="nav-item w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="accounts">
                 <span>🏦</span> Rekening
             </button>
-            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="categories">
-                <span>�️</span> Kategori
+            <button class="nav-item w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="categories">
+                <span>🏷️</span> Kategori
             </button>
         </nav>
 
@@ -138,7 +135,10 @@
         <!-- Transaction Form + Table (Full Width, Stacked) -->
         <section class="mb-6">
             <div class="bg-white rounded-xl p-5 border border-warm-100 mb-5">
-                <h3 class="text-base font-semibold text-gray-700 mb-4">Tambah Transaksi</h3>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-base font-semibold text-gray-700">Tambah Transaksi</h3>
+                    <a href="/transactions" class="text-xs text-warm-500 hover:text-warm-700 font-medium">Lihat semua →</a>
+                </div>
                 <form id="transaction-form" class="space-y-3">
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
                         <div>
@@ -186,10 +186,11 @@
                 </form>
             </div>
 
-            <!-- Transactions Table -->
+            <!-- 5 Last Transactions -->
             <div class="bg-white rounded-xl p-5 border border-warm-100">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-base font-semibold text-gray-700">5 Transaksi Terakhir</h3>
+                    <a href="/transactions" class="text-xs text-warm-500 hover:text-warm-700 font-medium">Lihat semua →</a>
                 </div>
                 <div class="overflow-x-auto scroll-thin">
                     <table class="w-full text-sm">

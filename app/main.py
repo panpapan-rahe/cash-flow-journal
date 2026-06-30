@@ -113,6 +113,12 @@ def dashboard():
     row = db.execute("SELECT COUNT(*) AS cnt FROM accounts").fetchone()
     needs_setup = (row["cnt"] == 0)
     return render_template("index.html", username=g.user["username"], needs_setup=needs_setup)
+
+@app.route("/transactions")
+def transactions():
+    if not g.user:
+        return redirect(url_for("login"))
+    return render_template("transactions.html", username=g.user["username"])
 # ─── API: Transactions ──────────────────────────────────────────
 @app.route("/api/transactions", methods=["GET"])
 def get_transactions():
