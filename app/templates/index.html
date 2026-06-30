@@ -64,26 +64,26 @@
                 <span class="text-2xl">�</span>
                 <div>
                     <h1 class="font-bold text-warm-700 text-sm leading-tight">Cashflow</h1>
-                    <p class="text-[10px] text-gray-400 leading-tight">Know what to do</p>
+                    <p class="text-xs text-gray-400 leading-tight">Know what to do</p>
                 </div>
             </div>
         </div>
 
         <!-- Nav -->
         <nav class="flex-1 px-3 py-3 space-y-1 overflow-y-auto scroll-thin">
-            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-2 bg-warm-100 text-warm-700" data-nav="dashboard">
+            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 bg-warm-100 text-warm-700" data-nav="dashboard">
                 <span>📊</span> Dashboard
             </button>
-            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="transactions">
+            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="transactions">
                 <span>💸</span> Transaksi
             </button>
-            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="debts">
+            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="debts">
                 <span>📋</span> Hutang
             </button>
-            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="accounts">
+            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="accounts">
                 <span>🏦</span> Rekening
             </button>
-            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="categories">
+            <button class="nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="categories">
                 <span>�️</span> Kategori
             </button>
         </nav>
@@ -91,49 +91,49 @@
         <!-- User footer -->
         <div class="px-3 py-3 border-t border-warm-100">
             <div class="flex items-center gap-2 px-2 py-1.5">
-                <div class="w-7 h-7 rounded-full bg-warm-400 flex items-center justify-center text-white text-xs font-bold uppercase">{{ username[0] }}</div>
-                <span class="text-xs font-medium text-gray-600 truncate flex-1">{{ username }}</span>
+                <div class="w-9 h-9 rounded-full bg-warm-400 flex items-center justify-center text-white text-sm font-bold uppercase">{{ username[0] }}</div>
+                <span class="text-sm font-medium text-gray-600 truncate flex-1">{{ username }}</span>
             </div>
-            <a href="/logout" class="mt-2 block text-center text-[11px] text-gray-400 hover:text-red-500 transition">Keluar</a>
+            <a href="/logout" class="mt-2 block text-center text-xs text-gray-400 hover:text-red-500 transition">Keluar</a>
         </div>
     </aside>
 
     <!-- ── Main Content ── -->
-    <main class="flex-1 overflow-y-auto scroll-thin p-4 lg:p-6 bg-cream">
+    <main class="flex-1 overflow-y-auto scroll-thin p-5 lg:p-7 bg-cream">
 
         <!-- Top bar -->
-        <header class="flex items-center justify-between mb-5">
+        <header class="flex items-center justify-between mb-6">
             <div>
                 <h2 class="text-lg font-bold text-gray-800">Dashboard</h2>
                 <p class="text-xs text-gray-400">Ringkasan keuanganmu</p>
             </div>
             <div class="flex items-center gap-2">
-                <button id="btn-settings" class="px-3 py-1.5 text-xs font-medium bg-white border border-warm-200 rounded-lg hover:bg-warm-50 text-gray-600 transition">�️ Pengaturan</button>
+                <button id="btn-settings" class="px-3 py-1.5 text-sm font-medium bg-white border border-warm-200 rounded-lg hover:bg-warm-50 text-gray-600 transition">�️ Pengaturan</button>
             </div>
         </header>
 
         <!-- Summary Cards -->
-        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
-            <div class="bg-white rounded-xl p-3.5 border border-warm-100">
-                <p class="text-[11px] text-gray-400 font-medium">Total Saldo</p>
-                <p class="text-base font-bold text-gray-800 mt-0.5" id="sum-balance">Rp 0</p>
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-xl p-5 border border-warm-100">
+                <p class="text-xs text-gray-400 font-medium">Total Saldo</p>
+                <p class="text-lg font-bold text-gray-800 mt-1" id="sum-balance">Rp 0</p>
             </div>
-            <div class="bg-white rounded-xl p-3.5 border border-warm-100">
-                <p class="text-[11px] text-gray-400 font-medium">Pemasukan</p>
-                <p class="text-base font-bold text-green-600 mt-0.5" id="sum-income">Rp 0</p>
+            <div class="bg-white rounded-xl p-5 border border-warm-100">
+                <p class="text-xs text-gray-400 font-medium">Pemasukan</p>
+                <p class="text-lg font-bold text-green-600 mt-1" id="sum-income">Rp 0</p>
             </div>
-            <div class="bg-white rounded-xl p-3.5 border border-warm-100">
-                <p class="text-[11px] text-gray-400 font-medium">Pengeluaran</p>
-                <p class="text-base font-bold text-red-500 mt-0.5" id="sum-expense">Rp 0</p>
+            <div class="bg-white rounded-xl p-5 border border-warm-100">
+                <p class="text-xs text-gray-400 font-medium">Pengeluaran</p>
+                <p class="text-lg font-bold text-red-500 mt-1" id="sum-expense">Rp 0</p>
             </div>
-            <div class="bg-white rounded-xl p-3.5 border border-warm-100">
-                <p class="text-[11px] text-gray-400 font-medium">Hutang Aktif</p>
-                <p class="text-base font-bold text-warm-600 mt-0.5" id="sum-debt">Rp 0</p>
+            <div class="bg-white rounded-xl p-5 border border-warm-100">
+                <p class="text-xs text-gray-400 font-medium">Hutang Aktif</p>
+                <p class="text-lg font-bold text-warm-600 mt-1" id="sum-debt">Rp 0</p>
             </div>
         </section>
 
         <!-- Accounts Grid -->
-        <section class="mb-5">
+        <section class="mb-6">
             <h3 class="text-sm font-semibold text-gray-700 mb-2">Rekening</h3>
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3" id="accounts-grid">
                 <div class="bg-white rounded-xl p-3 border border-warm-100 col-span-full text-center text-xs text-gray-400">Belum ada rekening</div>
@@ -141,20 +141,20 @@
         </section>
 
         <!-- Form Input + Transactions -->
-        <section class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-5">
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
 
             <!-- Transaction Form -->
-            <div class="bg-white rounded-xl p-4 border border-warm-100 lg:col-span-1">
+            <div class="bg-white rounded-xl p-5 border border-warm-100 lg:col-span-1">
                 <h3 class="text-sm font-semibold text-gray-700 mb-3">Tambah Transaksi</h3>
                 <form id="transaction-form" class="space-y-2.5">
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="block text-[11px] text-gray-500 mb-0.5">Tanggal</label>
-                            <input type="date" id="tx-date" required class="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50">
+                            <label class="block text-sm text-gray-500 mb-1">Tanggal</label>
+                            <input type="date" id="tx-date" required class="w-full text-sm border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50">
                         </div>
                         <div>
-                            <label class="block text-[11px] text-gray-500 mb-0.5">Tipe</label>
-                            <select id="tx-type" required class="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50">
+                            <label class="block text-sm text-gray-500 mb-1">Tipe</label>
+                            <select id="tx-type" required class="w-full text-sm border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50">
                                 <option value="income">Pemasukan</option>
                                 <option value="expense">Pengeluaran</option>
                                 <option value="transfer">Mutasi</option>
@@ -162,60 +162,60 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-[11px] text-gray-500 mb-0.5">Kategori</label>
-                        <select id="tx-category" required class="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50">
+                        <label class="block text-sm text-gray-500 mb-1">Kategori</label>
+                        <select id="tx-category" required class="w-full text-sm border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50">
                             <option value="">-- Pilih Kategori --</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] text-gray-500 mb-0.5">Akun</label>
-                        <select id="tx-account" required class="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50"></select>
+                        <label class="block text-sm text-gray-500 mb-1">Akun</label>
+                        <select id="tx-account" required class="w-full text-sm border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50"></select>
                     </div>
                     <div id="to-account-group" style="display:none">
-                        <label class="block text-[11px] text-gray-500 mb-0.5">Ke Akun</label>
-                        <select id="tx-to-account" class="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50"></select>
+                        <label class="block text-sm text-gray-500 mb-1">Ke Akun</label>
+                        <select id="tx-to-account" class="w-full text-sm border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50"></select>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="block text-[11px] text-gray-500 mb-0.5">Nominal</label>
-                            <input type="number" id="tx-amount" min="1" step="any" required placeholder="0" class="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50">
+                            <label class="block text-sm text-gray-500 mb-1">Nominal</label>
+                            <input type="number" id="tx-amount" min="1" step="any" required placeholder="0" class="w-full text-sm border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50">
                         </div>
                         <div>
-                            <label class="block text-[11px] text-gray-500 mb-0.5">Admin</label>
-                            <input type="number" id="tx-admin" min="0" step="any" placeholder="0" class="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50">
+                            <label class="block text-sm text-gray-500 mb-1">Admin</label>
+                            <input type="number" id="tx-admin" min="0" step="any" placeholder="0" class="w-full text-sm border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-[11px] text-gray-500 mb-0.5">Keterangan</label>
-                        <input type="text" id="tx-desc" placeholder="Opsional" class="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50">
+                        <label class="block text-sm text-gray-500 mb-1">Keterangan</label>
+                        <input type="text" id="tx-desc" placeholder="Opsional" class="w-full text-sm border border-gray-200 rounded-lg px-2.5 py-1.5 bg-gray-50">
                     </div>
-                    <button type="submit" class="w-full py-2 text-xs font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg transition">Simpan</button>
+                    <button type="submit" class="w-full py-2.5 text-sm font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg transition">Simpan</button>
                 </form>
             </div>
 
             <!-- Transactions Table -->
-            <div class="bg-white rounded-xl p-4 border border-warm-100 lg:col-span-2">
+            <div class="bg-white rounded-xl p-5 border border-warm-100 lg:col-span-2">
                 <div class="flex items-center justify-between mb-3">
                     <h3 class="text-sm font-semibold text-gray-700">Transaksi Terbaru</h3>
                     <div class="flex gap-1">
-                        <button class="btn-filter px-2 py-0.5 text-[11px] rounded-md bg-warm-500 text-white" data-filter="all">Semua</button>
-                        <button class="btn-filter px-2 py-0.5 text-[11px] rounded-md bg-gray-100 text-gray-500 hover:bg-warm-100" data-filter="income">Masuk</button>
-                        <button class="btn-filter px-2 py-0.5 text-[11px] rounded-md bg-gray-100 text-gray-500 hover:bg-warm-100" data-filter="expense">Keluar</button>
-                        <button class="btn-filter px-2 py-0.5 text-[11px] rounded-md bg-gray-100 text-gray-500 hover:bg-warm-100" data-filter="transfer">Mutasi</button>
+                        <button class="btn-filter px-2.5 py-1 text-xs rounded-md bg-warm-500 text-white" data-filter="all">Semua</button>
+                        <button class="btn-filter px-2.5 py-1 text-xs rounded-md bg-gray-100 text-gray-500 hover:bg-warm-100" data-filter="income">Masuk</button>
+                        <button class="btn-filter px-2.5 py-1 text-xs rounded-md bg-gray-100 text-gray-500 hover:bg-warm-100" data-filter="expense">Keluar</button>
+                        <button class="btn-filter px-2.5 py-1 text-xs rounded-md bg-gray-100 text-gray-500 hover:bg-warm-100" data-filter="transfer">Mutasi</button>
                     </div>
                 </div>
                 <div class="overflow-x-auto scroll-thin">
-                    <table class="w-full text-xs">
+                    <table class="w-full text-sm">
                         <thead>
                             <tr class="text-left text-gray-400 border-b border-gray-100">
-                                <th class="pb-2 font-medium">Tanggal</th>
-                                <th class="pb-2 font-medium">Kategori</th>
-                                <th class="pb-2 font-medium">Rekening</th>
-                                <th class="pb-2 font-medium text-right">Pemasukan</th>
-                                <th class="pb-2 font-medium text-right">Pengeluaran</th>
-                                <th class="pb-2 font-medium text-right">Admin</th>
-                                <th class="pb-2 font-medium">Keterangan</th>
-                                <th class="pb-2 font-medium"></th>
+                                <th class="pb-3 font-medium">Tanggal</th>
+                                <th class="pb-3 font-medium">Kategori</th>
+                                <th class="pb-3 font-medium">Rekening</th>
+                                <th class="pb-3 font-medium text-right">Pemasukan</th>
+                                <th class="pb-3 font-medium text-right">Pengeluaran</th>
+                                <th class="pb-3 font-medium text-right">Admin</th>
+                                <th class="pb-3 font-medium">Keterangan</th>
+                                <th class="pb-3 font-medium"></th>
                             </tr>
                         </thead>
                         <tbody id="transactions-body">
@@ -227,22 +227,22 @@
         </section>
 
         <!-- Debts Section -->
-        <section class="bg-white rounded-xl p-4 border border-warm-100 mb-5">
+        <section class="bg-white rounded-xl p-5 border border-warm-100 mb-6">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-sm font-semibold text-gray-700">Hutang</h3>
                 <button id="btn-add-debt" class="w-7 h-7 flex items-center justify-center bg-warm-500 hover:bg-warm-600 text-white rounded-full text-lg leading-none transition" title="Tambah Hutang">+</button>
             </div>
             <div class="overflow-x-auto scroll-thin">
-                <table class="w-full text-xs">
+                <table class="w-full text-sm">
                     <thead>
                         <tr class="text-left text-gray-400 border-b border-gray-100">
-                            <th class="pb-2 font-medium">Kebutuhan</th>
-                            <th class="pb-2 font-medium">Dari Rekening</th>
-                            <th class="pb-2 font-medium text-right">Total</th>
-                            <th class="pb-2 font-medium text-right">Dibayar</th>
-                            <th class="pb-2 font-medium text-right">Sisa</th>
-                            <th class="pb-2 font-medium">Status</th>
-                            <th class="pb-2 font-medium"></th>
+                            <th class="pb-3 font-medium">Kebutuhan</th>
+                            <th class="pb-3 font-medium">Dari Rekening</th>
+                            <th class="pb-3 font-medium text-right">Total</th>
+                            <th class="pb-3 font-medium text-right">Dibayar</th>
+                            <th class="pb-3 font-medium text-right">Sisa</th>
+                            <th class="pb-3 font-medium">Status</th>
+                            <th class="pb-3 font-medium"></th>
                         </tr>
                     </thead>
                     <tbody id="debts-body">
@@ -263,28 +263,28 @@
         <h3 class="text-sm font-bold text-gray-800 mb-4">Tambah Hutang</h3>
         <form id="debt-form" class="space-y-3">
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Kebutuhan Hutang</label>
-                <input type="text" id="debt-name" required class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                <label class="block text-sm text-gray-500 mb-1">Kebutuhan Hutang</label>
+                <input type="text" id="debt-name" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
             </div>
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Dari Rekening</label>
-                <select id="debt-account" required class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 bg-gray-50"></select>
+                <label class="block text-sm text-gray-500 mb-1">Dari Rekening</label>
+                <select id="debt-account" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50"></select>
             </div>
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Total Pinjaman</label>
-                <input type="number" id="debt-amount" min="1" step="any" required class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                <label class="block text-sm text-gray-500 mb-1">Total Pinjaman</label>
+                <input type="number" id="debt-amount" min="1" step="any" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
             </div>
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Biaya Admin</label>
-                <input type="number" id="debt-admin" min="0" step="any" placeholder="0" class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                <label class="block text-sm text-gray-500 mb-1">Biaya Admin</label>
+                <input type="number" id="debt-admin" min="0" step="any" placeholder="0" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
             </div>
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Keterangan</label>
-                <input type="text" id="debt-desc" placeholder="Opsional" class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                <label class="block text-sm text-gray-500 mb-1">Keterangan</label>
+                <input type="text" id="debt-desc" placeholder="Opsional" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
             </div>
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="closeDebtModal()" class="flex-1 py-2 text-xs font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Batal</button>
-                <button type="submit" class="flex-1 py-2 text-xs font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
+                <button type="button" onclick="closeDebtModal()" class="flex-1 py-2 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Batal</button>
+                <button type="submit" class="flex-1 py-2 text-sm font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
             </div>
         </form>
     </div>
@@ -297,24 +297,24 @@
         <form id="pay-form" class="space-y-3">
             <input type="hidden" id="pay-debt-id">
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Dari Rekening</label>
-                <select id="pay-account" required class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 bg-gray-50"></select>
+                <label class="block text-sm text-gray-500 mb-1">Dari Rekening</label>
+                <select id="pay-account" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50"></select>
             </div>
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Jumlah Bayar</label>
-                <input type="number" id="pay-amount" min="1" step="any" required class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                <label class="block text-sm text-gray-500 mb-1">Jumlah Bayar</label>
+                <input type="number" id="pay-amount" min="1" step="any" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
             </div>
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Biaya Admin</label>
-                <input type="number" id="pay-admin" min="0" step="any" placeholder="0" class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                <label class="block text-sm text-gray-500 mb-1">Biaya Admin</label>
+                <input type="number" id="pay-admin" min="0" step="any" placeholder="0" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
             </div>
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Catatan</label>
-                <input type="text" id="pay-note" placeholder="Opsional" class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                <label class="block text-sm text-gray-500 mb-1">Catatan</label>
+                <input type="text" id="pay-note" placeholder="Opsional" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
             </div>
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="closePayModal()" class="flex-1 py-2 text-xs font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Batal</button>
-                <button type="submit" class="flex-1 py-2 text-xs font-semibold bg-green-500 hover:bg-green-600 text-white rounded-lg">Bayar</button>
+                <button type="button" onclick="closePayModal()" class="flex-1 py-2 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Batal</button>
+                <button type="submit" class="flex-1 py-2 text-sm font-semibold bg-green-500 hover:bg-green-600 text-white rounded-lg">Bayar</button>
             </div>
         </form>
     </div>
@@ -330,19 +330,19 @@
         <div class="flex flex-1 overflow-hidden">
             <!-- Settings nav -->
             <div class="w-40 border-r border-gray-100 p-3 space-y-1">
-                <button class="settings-nav-item w-full text-left px-3 py-2 rounded-lg text-xs font-medium bg-warm-100 text-warm-700" data-panel="accounts">Akun</button>
-                <button class="settings-nav-item w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-gray-500 hover:bg-warm-50" data-panel="categories">Kategori</button>
+                <button class="settings-nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium bg-warm-100 text-warm-700" data-panel="accounts">Akun</button>
+                <button class="settings-nav-item w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-500 hover:bg-warm-50" data-panel="categories">Kategori</button>
             </div>
             <!-- Settings panel -->
             <div class="flex-1 p-4 overflow-y-auto scroll-thin">
                 <!-- Accounts panel -->
                 <div class="settings-panel" id="panel-accounts">
                     <div class="flex items-center justify-between mb-3">
-                        <h4 class="text-xs font-semibold text-gray-700">Daftar Rekening</h4>
-                        <button id="btn-add-account" class="px-2.5 py-1 text-[11px] font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">+ Tambah</button>
+                        <h4 class="text-sm font-semibold text-gray-700">Daftar Rekening</h4>
+                        <button id="btn-add-account" class="px-2.5 py-1 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">+ Tambah</button>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-xs">
+                        <table class="w-full text-sm">
                             <thead>
                                 <tr class="text-left text-gray-400 border-b border-gray-100">
                                     <th class="pb-2 font-medium">Rekening</th>
@@ -362,11 +362,11 @@
                 <!-- Categories panel -->
                 <div class="settings-panel" id="panel-categories" style="display:none">
                     <div class="flex items-center justify-between mb-3">
-                        <h4 class="text-xs font-semibold text-gray-700">Daftar Kategori</h4>
-                        <button id="btn-add-category" class="px-2.5 py-1 text-[11px] font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">+ Tambah</button>
+                        <h4 class="text-sm font-semibold text-gray-700">Daftar Kategori</h4>
+                        <button id="btn-add-category" class="px-2.5 py-1 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">+ Tambah</button>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-xs">
+                        <table class="w-full text-sm">
                             <thead>
                                 <tr class="text-left text-gray-400 border-b border-gray-100">
                                     <th class="pb-2 font-medium">Nama Kategori</th>
@@ -383,8 +383,8 @@
             </div>
         </div>
         <div class="px-5 py-3 border-t border-gray-100 flex justify-between items-center">
-            <button id="btn-delete-account" class="px-2.5 py-1 text-[11px] font-medium text-red-500 hover:bg-red-50 rounded-lg">Hapus Akun</button>
-            <button onclick="closeSettingsModal()" class="px-3 py-1.5 text-xs font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Tutup</button>
+            <button id="btn-delete-account" class="px-2.5 py-1 text-sm font-medium text-red-500 hover:bg-red-50 rounded-lg">Hapus Akun</button>
+            <button onclick="closeSettingsModal()" class="px-3 py-2 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Tutup</button>
         </div>
     </div>
 </div>
@@ -396,16 +396,16 @@
         <form id="account-form" class="space-y-3">
             <input type="hidden" id="account-id">
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Nama Rekening</label>
-                <input type="text" id="account-name" required placeholder="contoh: BCA, Mandiri, Cash" class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                <label class="block text-sm text-gray-500 mb-1">Nama Rekening</label>
+                <input type="text" id="account-name" required placeholder="contoh: BCA, Mandiri, Cash" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
             </div>
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Saldo Awal</label>
-                <input type="number" id="account-opening-balance" min="0" step="any" value="0" placeholder="0" class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                <label class="block text-sm text-gray-500 mb-1">Saldo Awal</label>
+                <input type="number" id="account-opening-balance" min="0" step="any" value="0" placeholder="0" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
             </div>
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="closeAccountFormModal()" class="flex-1 py-2 text-xs font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Batal</button>
-                <button type="submit" class="flex-1 py-2 text-xs font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
+                <button type="button" onclick="closeAccountFormModal()" class="flex-1 py-2 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Batal</button>
+                <button type="submit" class="flex-1 py-2 text-sm font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
             </div>
         </form>
     </div>
@@ -418,25 +418,25 @@
         <form id="category-form" class="space-y-3">
             <input type="hidden" id="category-id">
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Nama Kategori</label>
-                <input type="text" id="category-name" required placeholder="contoh: Gaji, Makanan" class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                <label class="block text-sm text-gray-500 mb-1">Nama Kategori</label>
+                <input type="text" id="category-name" required placeholder="contoh: Gaji, Makanan" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
             </div>
             <div>
-                <label class="block text-[11px] text-gray-500 mb-0.5">Tipe</label>
+                <label class="block text-sm text-gray-500 mb-1">Tipe</label>
                 <div class="flex gap-3">
                     <label class="flex items-center gap-1.5 text-xs cursor-pointer">
                         <input type="radio" name="category-type" value="income" checked class="accent-warm-500">
-                        <span class="px-2 py-0.5 rounded-md bg-green-100 text-green-700 text-[11px] font-medium">Pemasukan</span>
+                        <span class="px-2 py-0.5 rounded-md bg-green-100 text-green-700 text-sm font-medium">Pemasukan</span>
                     </label>
                     <label class="flex items-center gap-1.5 text-xs cursor-pointer">
                         <input type="radio" name="category-type" value="expense" class="accent-warm-500">
-                        <span class="px-2 py-0.5 rounded-md bg-red-100 text-red-700 text-[11px] font-medium">Pengeluaran</span>
+                        <span class="px-2 py-0.5 rounded-md bg-red-100 text-red-700 text-sm font-medium">Pengeluaran</span>
                     </label>
                 </div>
             </div>
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="closeCategoryFormModal()" class="flex-1 py-2 text-xs font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Batal</button>
-                <button type="submit" class="flex-1 py-2 text-xs font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
+                <button type="button" onclick="closeCategoryFormModal()" class="flex-1 py-2 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Batal</button>
+                <button type="submit" class="flex-1 py-2 text-sm font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
             </div>
         </form>
     </div>
@@ -453,9 +453,9 @@
             <div class="flex gap-2 mb-4">
                 <input type="text" id="forced-account-name" placeholder="Nama rekening" value="BCA" class="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50">
                 <input type="number" id="forced-account-opening" min="0" step="any" placeholder="Saldo" value="0" class="w-24 text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50">
-                <button id="btn-add-forced-account" class="px-3 py-1.5 text-[11px] font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">+ Tambah</button>
+                <button id="btn-add-forced-account" class="px-3 py-1.5 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">+ Tambah</button>
             </div>
-            <button id="btn-forced-next" class="w-full py-2 text-xs font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Lanjut →</button>
+            <button id="btn-forced-next" class="w-full py-2 text-sm font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Lanjut →</button>
         </div>
         <!-- Sheet 2: Categories -->
         <div class="forced-sheet" id="forced-sheet-2" style="display:none">
@@ -468,11 +468,11 @@
                     <option value="income">Pemasukan</option>
                     <option value="expense">Pengeluaran</option>
                 </select>
-                <button id="btn-add-forced-category" class="px-3 py-1.5 text-[11px] font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">+ Tambah</button>
+                <button id="btn-add-forced-category" class="px-3 py-1.5 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">+ Tambah</button>
             </div>
             <div class="flex gap-2">
-                <button id="btn-forced-back" class="flex-1 py-2 text-xs font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">← Kembali</button>
-                <button id="btn-forced-next-debt" class="flex-1 py-2 text-xs font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Lanjut ke Hutang Bawaan →</button>
+                <button id="btn-forced-back" class="flex-1 py-2 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">← Kembali</button>
+                <button id="btn-forced-next-debt" class="flex-1 py-2 text-sm font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Lanjut ke Hutang Bawaan →</button>
             </div>
         </div>
         <!-- Sheet 3: Opening Debts -->
@@ -484,12 +484,12 @@
                 <input type="text" id="forced-opening-debt-name" placeholder="Nama hutang" value="Hutang Bawaan" class="flex-1 min-w-[120px] text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50">
                 <select id="forced-opening-debt-account" class="text-xs border border-gray-200 rounded-lg px-2 py-1.5 bg-gray-50"></select>
                 <input type="number" id="forced-opening-debt-amount" min="1" step="any" placeholder="Jumlah" class="w-28 text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50">
-                <button id="btn-add-forced-opening-debt" class="px-3 py-1.5 text-[11px] font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">+ Tambah</button>
+                <button id="btn-add-forced-opening-debt" class="px-3 py-1.5 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">+ Tambah</button>
             </div>
-            <input type="text" id="forced-opening-debt-desc" placeholder="Keterangan (opsional)" class="w-full text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50 mb-4">
+            <input type="text" id="forced-opening-debt-desc" placeholder="Keterangan (opsional)" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50 mb-4">
             <div class="flex gap-2">
-                <button id="btn-forced-back-debt" class="flex-1 py-2 text-xs font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">← Kembali</button>
-                <button id="btn-forced-selesai" class="flex-1 py-2 text-xs font-semibold bg-green-500 hover:bg-green-600 text-white rounded-lg">Selesai</button>
+                <button id="btn-forced-back-debt" class="flex-1 py-2 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">← Kembali</button>
+                <button id="btn-forced-selesai" class="flex-1 py-2 text-sm font-semibold bg-green-500 hover:bg-green-600 text-white rounded-lg">Selesai</button>
             </div>
         </div>
     </div>
@@ -500,7 +500,7 @@
     <div class="bg-white rounded-2xl p-5 w-full max-w-md mx-4 shadow-xl">
         <h3 class="text-sm font-bold text-gray-800 mb-4" id="account-detail-title">Detail Rekening</h3>
         <div id="account-detail-body" class="text-xs text-gray-600 mb-4"></div>
-        <button onclick="closeAccountDetailModal()" class="w-full py-2 text-xs font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Tutup</button>
+        <button onclick="closeAccountDetailModal()" class="w-full py-2 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Tutup</button>
     </div>
 </div>
 
