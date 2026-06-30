@@ -39,6 +39,9 @@
         /* Sidebar nav hover/active transitions */
         .nav-item { transition: background-color 0.15s, color 0.15s; }
 
+        /* Table row breathability — target TDs since JS generates <tr> dynamically */
+        table.text-sm td { padding: 10px 6px; vertical-align: middle; }
+
         /* Modal overlay */
         .modal-overlay { animation: fadeIn 0.15s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -194,7 +197,7 @@
             </div>
 
             <!-- Transactions Table -->
-            <div class="bg-white rounded-xl p-5 border border-warm-100 lg:col-span-2">
+            <div class="bg-white rounded-xl p-6 border border-warm-100 lg:col-span-2">
                 <div class="flex items-center justify-between mb-3">
                     <h3 class="text-sm font-semibold text-gray-700">Transaksi Terbaru</h3>
                     <div class="flex gap-1">
@@ -208,14 +211,14 @@
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="text-left text-gray-400 border-b border-gray-100">
-                                <th class="pb-3 font-medium">Tanggal</th>
-                                <th class="pb-3 font-medium">Kategori</th>
-                                <th class="pb-3 font-medium">Rekening</th>
-                                <th class="pb-3 font-medium text-right">Pemasukan</th>
-                                <th class="pb-3 font-medium text-right">Pengeluaran</th>
-                                <th class="pb-3 font-medium text-right">Admin</th>
-                                <th class="pb-3 font-medium">Keterangan</th>
-                                <th class="pb-3 font-medium"></th>
+                                <th class="pb-4 pt-2 font-medium">Tanggal</th>
+                                <th class="pb-4 pt-2 font-medium">Kategori</th>
+                                <th class="pb-4 pt-2 font-medium">Rekening</th>
+                                <th class="pb-4 pt-2 font-medium text-right">Pemasukan</th>
+                                <th class="pb-4 pt-2 font-medium text-right">Pengeluaran</th>
+                                <th class="pb-4 pt-2 font-medium text-right">Admin</th>
+                                <th class="pb-4 pt-2 font-medium">Keterangan</th>
+                                <th class="pb-4 pt-2 font-medium"></th>
                             </tr>
                         </thead>
                         <tbody id="transactions-body">
@@ -227,7 +230,7 @@
         </section>
 
         <!-- Debts Section -->
-        <section class="bg-white rounded-xl p-5 border border-warm-100 mb-6">
+        <section class="bg-white rounded-xl p-6 border border-warm-100 mb-6">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-sm font-semibold text-gray-700">Hutang</h3>
                 <button id="btn-add-debt" class="w-7 h-7 flex items-center justify-center bg-warm-500 hover:bg-warm-600 text-white rounded-full text-lg leading-none transition" title="Tambah Hutang">+</button>
@@ -236,13 +239,13 @@
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="text-left text-gray-400 border-b border-gray-100">
-                            <th class="pb-3 font-medium">Kebutuhan</th>
-                            <th class="pb-3 font-medium">Dari Rekening</th>
-                            <th class="pb-3 font-medium text-right">Total</th>
-                            <th class="pb-3 font-medium text-right">Dibayar</th>
-                            <th class="pb-3 font-medium text-right">Sisa</th>
-                            <th class="pb-3 font-medium">Status</th>
-                            <th class="pb-3 font-medium"></th>
+                            <th class="pb-4 pt-2 font-medium">Kebutuhan</th>
+                            <th class="pb-4 pt-2 font-medium">Dari Rekening</th>
+                            <th class="pb-4 pt-2 font-medium text-right">Total</th>
+                            <th class="pb-4 pt-2 font-medium text-right">Dibayar</th>
+                            <th class="pb-4 pt-2 font-medium text-right">Sisa</th>
+                            <th class="pb-4 pt-2 font-medium">Status</th>
+                            <th class="pb-4 pt-2 font-medium"></th>
                         </tr>
                     </thead>
                     <tbody id="debts-body">
