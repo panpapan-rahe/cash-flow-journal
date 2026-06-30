@@ -500,10 +500,10 @@
 
 <!-- Account Detail Modal -->
 <div class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/40" id="account-detail-modal" style="display:none">
-    <div class="bg-white rounded-2xl p-5 w-full max-w-md mx-4 shadow-xl">
-        <h3 class="text-sm font-bold text-gray-800 mb-4" id="account-detail-title">Detail Rekening</h3>
-        <div id="account-detail-body" class="text-xs text-gray-600 mb-4"></div>
-        <button onclick="closeAccountDetailModal()" class="w-full py-2 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Tutup</button>
+    <div class="bg-white rounded-2xl p-6 w-full max-w-lg mx-4 shadow-xl max-h-[85vh] overflow-y-auto scroll-thin">
+        <h3 class="text-base font-bold text-gray-800 mb-4" id="account-detail-title">Detail Rekening</h3>
+        <div id="account-detail-body"></div>
+        <button onclick="closeAccountDetailModal()" class="w-full mt-5 py-2.5 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Tutup</button>
     </div>
 </div>
 

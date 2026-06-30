@@ -970,15 +970,15 @@ window.openAccountDetail = async function(accountId, accountName) {
     const body = document.getElementById('account-detail-body');
     if (!modal || !title || !body) return;
 
-    title.textContent = `Detail Rekening — ${accountName}`;
-    body.innerHTML = '<div class="loading-state">Memuat...</div>';
+    title.textContent = `Detail — ${accountName}`;
+    body.innerHTML = '<div class="text-sm text-gray-400 py-6 text-center">Memuat...</div>';
     modal.style.display = 'flex';
 
     try {
         const accounts = await api('/api/accounts');
         const acc = accounts.find(a => String(a.id) === String(accountId));
         if (!acc) {
-            body.innerHTML = '<div class="empty-state">Data akun tidak ditemukan.</div>';
+            body.innerHTML = '<div class="text-sm text-gray-400 py-6 text-center">Data akun tidak ditemukan.</div>';
             return;
         }
         const opening = acc.opening_balance || 0;
@@ -987,37 +987,71 @@ window.openAccountDetail = async function(accountId, accountName) {
         const transferOut = acc.transfer_out || 0;
         const transferIn = acc.transfer_in || 0;
         const balance = acc.balance ?? (opening + income - expense - transferOut + transferIn);
+        const balanceClass = balance < 0 ? 'text-red-500' : 'text-warm-700';
+
+        // Fetch recent transactions for this account
+        const allTx = await api('/api/transactions');
+        const accountTx = allTx.filter(t =>
+            String(t.account_id) === String(accountId) || String(t.to_account_id) === String(accountId)
+        ).slice(0, 20);
+
+        const txRows = accountTx.length > 0 ? accountTx.map(tx => {
+            const isIncoming = tx.type === 'income' || (tx.type === 'transfer' && String(tx.to_account_id) === String(accountId));
+            const amountClass = isIncoming ? 'text-green-600' : 'text-red-500';
+            const sign = isIncoming ? '+' : '−';
+            return `
+                <tr class="border-b border-gray-50">
+                    <td class="py-2.5 pr-3 text-sm text-gray-600">${formatDate(tx.date)}</td>
+                    <td class="py-2.5 pr-3 text-sm">${tx.category_name || ''}</td>
+                    <td class="py-2.5 pr-3 text-sm text-gray-500">${tx.description || '—'}</td>
+                    <td class="py-2.5 text-sm text-right font-medium ${amountClass}">${sign} ${formatCurrency(tx.amount)}</td>
+                </tr>
+            `;
+        }).join('') : '<tr><td colspan="4" class="py-4 text-center text-sm text-gray-400">Belum ada transaksi</td></tr>';
 
         body.innerHTML = `
-            <div class="detail-summary">
-                <div class="detail-row detail-row-total">
-                    <span class="detail-label">Saldo Saat Ini</span>
-                    <span class="detail-value">${formatCurrency(balance)}</span>
+            <div class="text-center mb-5">
+                <p class="text-xs text-gray-400 uppercase tracking-wide">Saldo Saat Ini</p>
+                <p class="text-2xl font-bold ${balanceClass} mt-1">${formatCurrency(balance)}</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-5">
+                <div class="bg-gray-50 rounded-lg p-3 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase tracking-wide">Saldo Awal</p>
+                    <p class="text-sm font-semibold text-gray-700 mt-0.5">${formatCurrency(opening)}</p>
                 </div>
-                <div class="detail-row">
-                    <span class="detail-label">Saldo Awal</span>
-                    <span class="detail-value">${formatCurrency(opening)}</span>
+                <div class="bg-green-50 rounded-lg p-3 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase tracking-wide">Pemasukan</p>
+                    <p class="text-sm font-semibold text-green-600 mt-0.5">+ ${formatCurrency(income)}</p>
                 </div>
-                <div class="detail-row">
-                    <span class="detail-label">Saldo Masuk</span>
-                    <span class="detail-value amount-income">+ ${formatCurrency(income)}</span>
+                <div class="bg-red-50 rounded-lg p-3 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase tracking-wide">Pengeluaran</p>
+                    <p class="text-sm font-semibold text-red-500 mt-0.5">− ${formatCurrency(expense)}</p>
                 </div>
-                <div class="detail-row">
-                    <span class="detail-label">Saldo Keluar</span>
-                    <span class="detail-value amount-expense">- ${formatCurrency(expense)}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Mutasi Masuk</span>
-                    <span class="detail-value amount-income">+ ${formatCurrency(transferIn)}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Mutasi Keluar</span>
-                    <span class="detail-value amount-expense">- ${formatCurrency(transferOut)}</span>
+                <div class="bg-warm-50 rounded-lg p-3 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase tracking-wide">Net Mutasi</p>
+                    <p class="text-sm font-semibold ${(transferIn - transferOut) >= 0 ? 'text-green-600' : 'text-red-500'} mt-0.5">${(transferIn - transferOut) >= 0 ? '+' : '−'} ${formatCurrency(Math.abs(transferIn - transferOut))}</p>
                 </div>
             </div>
+
+            <h4 class="text-sm font-semibold text-gray-700 mb-2">Transaksi Terbaru</h4>
+            <div class="overflow-x-auto rounded-lg border border-gray-100">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-gray-400 bg-gray-50 border-b border-gray-100">
+                            <th class="px-3 py-2.5 font-medium text-xs">Tanggal</th>
+                            <th class="px-3 py-2.5 font-medium text-xs">Kategori</th>
+                            <th class="px-3 py-2.5 font-medium text-xs">Keterangan</th>
+                            <th class="px-3 py-2.5 font-medium text-xs text-right">Jumlah</th>
+                        </tr>
+                    </thead>
+                    <tbody>${txRows}</tbody>
+                </table>
+            </div>
+            ${accountTx.length >= 20 ? '<p class="text-[11px] text-gray-400 text-center mt-2">Menampilkan 20 transaksi terbaru</p>' : ''}
         `;
     } catch (e) {
-        body.innerHTML = '<div class="empty-state">Gagal memuat data akun.</div>';
+        body.innerHTML = '<div class="text-sm text-gray-400 py-6 text-center">Gagal memuat data akun.</div>';
         console.warn('Failed to load account detail', e);
     }
 };
