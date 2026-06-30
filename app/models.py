@@ -3,7 +3,10 @@ import sqlite3
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+DATA_DIR = os.environ.get(
+    "CASHFLOW_DATA_DIR",
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data"),
+)
 
 def get_users_db() -> sqlite3.Connection:
     os.makedirs(DATA_DIR, exist_ok=True)

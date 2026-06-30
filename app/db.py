@@ -3,7 +3,10 @@ import sqlite3
 import os
 from flask import g
 
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+DATA_DIR = os.environ.get(
+    "CASHFLOW_DATA_DIR",
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data"),
+)
 
 def get_db_path(user_id: int) -> str:
     return os.path.join(DATA_DIR, f"user_{user_id}.db")
