@@ -138,7 +138,8 @@ async function loadTransactions() {
 
 function renderTransactions(transactions) {
     const tbody = document.getElementById('transactions-body');
-    
+    if (!tbody) return;
+
     if (transactions.length === 0) {
         tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Belum ada transaksi</td></tr>';
         return;
@@ -846,10 +847,14 @@ async function loadAccountsGrid() {
 
 // ─── Render All ───
 async function renderAll() {
-    await Promise.all([loadTransactions(), loadDebts(), loadAccountsGrid()]);
-    await updateCategoryDropdown();
-    await updateAccountDropdowns();
-    updateSummaryCards();
+    try {
+        await Promise.all([loadTransactions(), loadDebts(), loadAccountsGrid()]);
+        await updateCategoryDropdown();
+        await updateAccountDropdowns();
+        updateSummaryCards();
+    } catch (e) {
+        console.error('[renderAll] Error:', e);
+    }
 }
 
 // ─── Summary Cards ───
