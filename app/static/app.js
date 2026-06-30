@@ -98,19 +98,16 @@ async function updateCategoryDropdown() {
     try {
         const categories = await api('/api/categories');
         const select = document.getElementById('tx-category');
-        const currentType = document.getElementById('tx-type').value;
-        
-        // Filter categories by transaction type
+        const typeEl = document.getElementById('tx-type');
+        if (!select || !typeEl) return;
+        const currentType = typeEl.value;
+
         let filtered = categories;
-        if (currentType === 'income') {
-            filtered = categories.filter(c => c.type === 'income');
-        } else if (currentType === 'expense') {
-            filtered = categories.filter(c => c.type === 'expense');
-        } else if (currentType === 'transfer') {
-            filtered = categories.filter(c => c.type === 'transfer');
-        }
-        
-        select.innerHTML = '<option value="">-- Pilih Kategori --</option>' + 
+        if (currentType === 'income') filtered = categories.filter(c => c.type === 'income');
+        else if (currentType === 'expense') filtered = categories.filter(c => c.type === 'expense');
+        else if (currentType === 'transfer') filtered = categories.filter(c => c.type === 'transfer');
+
+        select.innerHTML = '<option value="">-- Pilih Kategori --</option>' +
             filtered.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
     } catch (e) {
         console.warn('Failed to load category dropdown', e);
@@ -951,27 +948,32 @@ function attachTransactionFormListener() {
 
 function attachTypeChangeListener() {
     const txCategory = document.getElementById('tx-category');
+    if (!txCategory) return;
     const categoryGroup = txCategory.closest('.form-group');
     const txForm = document.getElementById('transaction-form');
+    const txType = document.getElementById('tx-type');
+    const toAccountGroup = document.getElementById('to-account-group');
     const txAccountLabel = document.getElementById('tx-account-label');
     const txToAccountLabel = document.getElementById('tx-to-account-label');
-    
+
+    if (!txType) return;
     txType.addEventListener('change', () => {
         const isTransfer = txType.value === 'transfer';
-        txForm.classList.toggle('mode-transfer', isTransfer);
-        txForm.classList.toggle('mode-standard', !isTransfer);
-        toAccountGroup.style.display = isTransfer ? 'flex' : 'none';
-        
+        if (txForm) {
+            txForm.classList.toggle('mode-transfer', isTransfer);
+            txForm.classList.toggle('mode-standard', !isTransfer);
+        }
+        if (toAccountGroup) toAccountGroup.style.display = isTransfer ? 'flex' : 'none';
+
         if (isTransfer) {
-            txAccountLabel.textContent = 'Bank Asal';
-            txToAccountLabel.textContent = 'Bank Tujuan';
-            // Auto-set kategori to "Mutasi" and disable dropdown
+            if (txAccountLabel) txAccountLabel.textContent = 'Bank Asal';
+            if (txToAccountLabel) txToAccountLabel.textContent = 'Bank Tujuan';
             txCategory.value = 'Mutasi';
             txCategory.disabled = true;
             if (categoryGroup) categoryGroup.style.display = 'none';
         } else {
-            txAccountLabel.textContent = 'Akun';
-            txToAccountLabel.textContent = 'Ke Akun';
+            if (txAccountLabel) txAccountLabel.textContent = 'Akun';
+            if (txToAccountLabel) txToAccountLabel.textContent = 'Ke Akun';
             txCategory.disabled = false;
             txCategory.value = '';
             if (categoryGroup) categoryGroup.style.display = '';
