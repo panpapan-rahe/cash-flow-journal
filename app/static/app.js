@@ -176,6 +176,8 @@ async function deleteTransaction(id) {
     try {
         await api('/api/transactions/' + id, { method: 'DELETE' });
         await loadTransactions();
+        await loadAccountsGrid();
+        updateSummaryCards();
     } catch (e) {
         alert('Gagal menghapus: ' + e.message);
     }
@@ -260,6 +262,7 @@ debtForm.addEventListener('submit', async (e) => {
         closeDebtModal();
         await loadDebts();
         await loadAccountsGrid();
+        updateSummaryCards();
         await updateAccountDropdowns();
     } catch (e) {
         alert('Gagal menambah hutang: ' + e.message);
@@ -307,6 +310,7 @@ payForm.addEventListener('submit', async (e) => {
         closePayModal();
         await loadDebts();
         await loadAccountsGrid();
+        updateSummaryCards();
         await updateAccountDropdowns();
     } catch (e) {
         alert('Gagal mencatat pembayaran: ' + e.message);
@@ -318,6 +322,7 @@ async function deleteDebt(id) {
     try {
         await api('/api/debts/' + id, { method: 'DELETE' });
         await loadDebts();
+        updateSummaryCards();
     } catch (e) {
         alert('Gagal menghapus: ' + e.message);
     }
@@ -437,6 +442,7 @@ document.getElementById('account-form').addEventListener('submit', async (e) => 
             closeAccountFormModal();
             await loadAccountsSettings();
             await loadAccountsGrid();
+            updateSummaryCards();
             await updateAccountDropdowns();
         }
     } catch (e) {
@@ -543,6 +549,7 @@ window.deleteAccount = async function(id) {
         await api('/api/accounts/' + id, { method: 'DELETE' });
         await loadAccountsSettings();
         await loadAccountsGrid();
+        updateSummaryCards();
         await updateAccountDropdowns();
     } catch (e) {
         alert('Gagal menghapus: ' + e.message);
@@ -845,6 +852,27 @@ async function renderAll() {
     await Promise.all([loadTransactions(), loadDebts(), loadAccountsGrid()]);
     await updateCategoryDropdown();
     await updateAccountDropdowns();
+    updateSummaryCards();
+}
+
+// ─── Summary Cards ───
+function updateSummaryCards() {
+    // Sum balance from all accounts (loadAccountsGrid fetches /api/accounts but doesn't expose data — refetch here)
+    fetch('/api/accounts', { credentials: 'include' })
+        .then(r => r.json())
+        .then(accounts => {
+            const total = accounts.reduce((sum, a) => sum + (a.balance || 0), 0);
+            const el = document.getElementById('sum-balance');
+            if (el) el.textContent = formatCurrency(total);
+        })
+        .catch(() => {});
+
+    // Sum active debt (from allDebts loaded by loadDebts)
+    const debtEl = document.getElementById('sum-debt');
+    if (debtEl && typeof allDebts !== 'undefined') {
+        const totalDebt = allDebts.reduce((sum, d) => sum + ((d.amount_total || 0) - (d.total_paid || 0)), 0);
+        debtEl.textContent = formatCurrency(totalDebt);
+    }
 }
 
 // ─── Init ───
@@ -911,6 +939,7 @@ function attachTransactionFormListener() {
                 document.getElementById('tx-date').value = todayISO();
                 await loadTransactions();
                 await loadAccountsGrid();
+                updateSummaryCards();
                 await updateAccountDropdowns();
                 await updateCategoryDropdown();
             }
