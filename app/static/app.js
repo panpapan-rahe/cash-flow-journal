@@ -131,7 +131,7 @@ let currentPayDebt = null;
 async function loadTransactions() {
     try {
         allTransactions = await api('/api/transactions');
-        renderTransactions(allTransactions);
+        renderTransactions(allTransactions.slice(0, 5));
         updateCategoryDropdown();
         updateAccountDropdowns();
     } catch (e) {
@@ -181,19 +181,7 @@ async function deleteTransaction(id) {
     }
 }
 
-// Filter transactions
-document.querySelectorAll('.btn-filter').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const filter = btn.dataset.filter;
-        if (filter === 'all') {
-            renderTransactions(allTransactions);
-        } else {
-            renderTransactions(allTransactions.filter(t => t.type === filter));
-        }
-    });
-});
+// Filter removed — showing last 5 transactions only
 
 // ─── Debts ───
 async function loadDebts() {
