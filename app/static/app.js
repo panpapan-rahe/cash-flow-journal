@@ -3,6 +3,12 @@
 const API_BASE = '';
 
 // ─── Helpers ───
+function esc(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
 function formatCurrency(num) {
     return 'Rp ' + Number(num).toLocaleString('id-ID');
 }
@@ -231,10 +237,12 @@ const debtModal = document.getElementById('debt-modal');
 const debtForm = document.getElementById('debt-form');
 const btnAddDebt = document.getElementById('btn-add-debt');
 
-btnAddDebt.addEventListener('click', async () => {
-    debtModal.style.display = 'flex';
-    await updateDebtAccountDropdown();
-});
+if (btnAddDebt && debtModal) {
+    btnAddDebt.addEventListener('click', async () => {
+        debtModal.style.display = 'flex';
+        await updateDebtAccountDropdown();
+    });
+}
 
 window.closeDebtModal = function() {
     debtModal.style.display = 'none';
