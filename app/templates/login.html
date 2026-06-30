@@ -3,39 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cashflow Web - Login</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='72' font-size='72' text-anchor='middle'%3E🏦%3C/text%3E%3C/svg%3E">
-    <link rel="stylesheet" href="/static/style.css">
+    <title>Cashflow - Login</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='72' font-size='72' text-anchor='middle'%3E�%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        warm: {
+                            50: '#fffbf5',
+                            100: '#fff3e0',
+                            200: '#ffe0b2',
+                            300: '#ffcc80',
+                            400: '#ffa726',
+                            500: '#ff9800',
+                            600: '#f57c00',
+                            700: '#e65100',
+                        },
+                        cream: '#fffbf5',
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        input:focus { outline: none; box-shadow: 0 0 0 2px #ffe0b2; border-color: #ff9800 !important; }
+    </style>
 </head>
-<body class="login-page">
-    <div class="login-card">
-        <h1>Cashflow</h1>
-        <p class="subtitle">Pencatatan keuangan personal</p>
-        
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, msg in messages %}
-                    <div class="alert alert-{{ category }}">{{ msg }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        
-        <form method="POST" action="/login">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required autocomplete="username">
+<body class="bg-cream min-h-screen flex items-center justify-center px-4">
+
+    <div class="w-full max-w-sm">
+        <!-- Card -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 border border-warm-100">
+            <!-- Logo -->
+            <div class="text-center mb-6">
+                <span class="text-4xl">�</span>
+                <h1 class="text-xl font-bold text-warm-700 mt-2">Cashflow</h1>
+                <p class="text-xs text-gray-400 mt-0.5">Pencatatan keuangan personal</p>
             </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required autocomplete="current-password">
-            </div>
-            {% if user_count == 0 %}
-                <p class="hint">User pertama akan otomatis dibuat sebagai akun.</p>
-            {% endif %}
-            <input type="hidden" name="action" id="action" value="login">
-            <button type="submit" class="btn btn-primary" id="btn-login">Masuk</button>
-            <button type="submit" class="btn btn-secondary" id="btn-register" onclick="document.getElementById('action').value='register';">Daftar Akun Baru</button>
-        </form>
+
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, msg in messages %}
+                        <div class="mb-3 px-3 py-2 rounded-lg text-xs font-medium
+                            {% if category == 'error' %} bg-red-50 text-red-600 border border-red-100
+                            {% else %} bg-green-50 text-green-600 border border-green-100 {% endif %}">
+                            {{ msg }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Form -->
+            <form method="POST" action="/login" class="space-y-3">
+                <div>
+                    <label class="block text-[11px] text-gray-500 font-medium mb-1">Username</label>
+                    <input type="text" id="username" name="username" required autocomplete="username"
+                        class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 focus:bg-white transition">
+                </div>
+                <div>
+                    <label class="block text-[11px] text-gray-500 font-medium mb-1">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password"
+                        class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 focus:bg-white transition">
+                </div>
+
+                {% if user_count == 0 %}
+                    <p class="text-[11px] text-warm-600 bg-warm-50 px-3 py-2 rounded-lg border border-warm-100">
+                        User pertama akan otomatis dibuat sebagai akun.
+                    </p>
+                {% endif %}
+
+                <input type="hidden" name="action" id="action" value="login">
+                <button type="submit" id="btn-login"
+                    class="w-full py-2.5 text-sm font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg transition">
+                    Masuk
+                </button>
+                <button type="submit" id="btn-register"
+                    onclick="document.getElementById('action').value='register';"
+                    class="w-full py-2 text-xs font-medium border border-warm-200 text-warm-600 hover:bg-warm-50 rounded-lg transition">
+                    Daftar Akun Baru
+                </button>
+            </form>
+        </div>
+
+        <p class="text-center text-[11px] text-gray-300 mt-4">Know what to do, Know what to use.</p>
     </div>
+
 </body>
 </html>
