@@ -883,7 +883,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginPage = document.querySelector('.login-page');
     if (loginPage) return; // on login page
     
-    document.getElementById('tx-date').value = todayISO();
+    const txDateEl = document.getElementById('tx-date');
+    if (txDateEl) txDateEl.value = todayISO();
     
     // Attach event listeners immediately (don't wait for checkAuth)
     attachTransactionFormListener();
