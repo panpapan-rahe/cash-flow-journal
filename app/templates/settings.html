@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan - Cashflow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        warm: {
+                            50: '#fff8f1', 100: '#feecdc', 200: '#fcd9bd', 300: '#fdba8c',
+                            400: '#ff8a4c', 500: '#ff5a1f', 600: '#d03801', 700: '#b43403',
+                            800: '#8a2c0d', 900: '#73230d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #fffbf5; font-family: 'Inter', -apple-system, sans-serif; }
+        .nav-item { transition: background-color 0.15s, color 0.15s; }
+        .settings-nav-item { transition: background-color 0.15s, color 0.15s; }
+        .scroll-thin::-webkit-scrollbar { width: 4px; }
+        .scroll-thin::-webkit-scrollbar-track { background: transparent; }
+        .scroll-thin::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 9999px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-overlay { animation: fadeIn 0.15s ease; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-[220px] bg-white border-r border-warm-100 flex flex-col flex-shrink-0">
+            <div class="px-4 py-4 border-b border-warm-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-warm-400 to-warm-600 flex items-center justify-center">
+                        <span class="text-white text-sm font-bold">C</span>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-warm-700 text-sm leading-tight">Cashflow</h1>
+                        <p class="text-xs text-gray-400 leading-tight">Know what to do</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="flex-1 px-3 py-3 space-y-1 overflow-y-auto scroll-thin">
+                <a href="/dashboard" class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600">
+                    <span>📊</span> Dashboard
+                </a>
+                <a href="/transactions" class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600">
+                    <span>💸</span> Transaksi
+                </a>
+                <a href="/settings" class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 bg-warm-100 text-warm-700">
+                    <span>⚙️</span> Pengaturan
+                </a>
+            </nav>
+            <div class="px-3 py-3 border-t border-warm-100">
+                <div class="flex items-center gap-2 px-2 py-1.5">
+                    <div class="w-9 h-9 rounded-full bg-warm-400 flex items-center justify-center text-white text-sm font-bold uppercase">{{ username[0] }}</div>
+                    <span class="text-sm font-medium text-gray-600 truncate flex-1">{{ username }}</span>
+                    <a href="/logout" class="text-gray-400 hover:text-red-500 text-sm" title="Logout">⏻</a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="flex-1 overflow-y-auto">
+            <div class="p-6 max-w-4xl mx-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-lg font-bold text-gray-800">Pengaturan</h2>
+                </div>
+
+                <!-- Settings nav tabs -->
+                <div class="flex gap-2 mb-6">
+                    <button class="settings-tab px-4 py-2 text-sm font-medium rounded-lg bg-warm-100 text-warm-700" data-tab="accounts">Rekening</button>
+                    <button class="settings-tab px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:bg-warm-50" data-tab="categories">Kategori</button>
+                </div>
+
+                <!-- Accounts panel -->
+                <div class="settings-content" id="content-accounts">
+                    <div class="bg-white rounded-xl border border-warm-100 p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-sm font-semibold text-gray-700">Daftar Rekening</h4>
+                            <button id="btn-add-account" class="px-3 py-1.5 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg transition">+ Tambah</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="text-left text-gray-400 border-b border-gray-100">
+                                        <th class="pb-2 font-medium">Rekening</th>
+                                        <th class="pb-2 font-medium text-right">Saldo Awal</th>
+                                        <th class="pb-2 font-medium text-right">Pemasukan</th>
+                                        <th class="pb-2 font-medium text-right">Pengeluaran</th>
+                                        <th class="pb-2 font-medium text-right">Saldo</th>
+                                        <th class="pb-2 font-medium"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="accounts-settings-body">
+                                    <tr><td colspan="6" class="text-center py-4 text-gray-400">Belum ada rekening</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button id="btn-delete-account" class="px-3 py-1.5 text-sm font-medium text-red-500 hover:bg-red-50 rounded-lg transition">Hapus Akun</button>
+                    </div>
+                </div>
+
+                <!-- Categories panel -->
+                <div class="settings-content" id="content-categories" style="display:none">
+                    <div class="bg-white rounded-xl border border-warm-100 p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-sm font-semibold text-gray-700">Daftar Kategori</h4>
+                            <button id="btn-add-category" class="px-3 py-1.5 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg transition">+ Tambah</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="text-left text-gray-400 border-b border-gray-100">
+                                        <th class="pb-2 font-medium">Nama Kategori</th>
+                                        <th class="pb-2 font-medium">Tipe</th>
+                                        <th class="pb-2 font-medium"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categories-settings-body">
+                                    <tr><td colspan="3" class="text-center py-4 text-gray-400">Belum ada kategori</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Account Modal -->
+    <div class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/40" id="account-form-modal" style="display:none">
+        <div class="bg-white rounded-2xl p-5 w-full max-w-sm mx-4 shadow-xl">
+            <h3 class="text-sm font-bold text-gray-800 mb-4" id="account-form-title">Tambah Rekening</h3>
+            <form id="account-form" class="space-y-3">
+                <input type="hidden" id="account-id">
+                <div>
+                    <label class="block text-sm text-gray-500 mb-1">Nama Rekening</label>
+                    <input type="text" id="account-name" required placeholder="contoh: BCA, Mandiri, Cash" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-500 mb-1">Saldo Awal (Rp)</label>
+                    <input type="number" id="account-balance" required min="0" step="1000" placeholder="0" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="flex-1 py-2 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
+                    <button type="button" onclick="closeAccountForm()" class="flex-1 py-2 text-sm font-medium border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/40" id="category-form-modal" style="display:none">
+        <div class="bg-white rounded-2xl p-5 w-full max-w-sm mx-4 shadow-xl">
+            <h3 class="text-sm font-bold text-gray-800 mb-4" id="category-form-title">Tambah Kategori</h3>
+            <form id="category-form" class="space-y-3">
+                <input type="hidden" id="category-id">
+                <div>
+                    <label class="block text-sm text-gray-500 mb-1">Nama Kategori</label>
+                    <input type="text" id="category-name" required placeholder="contoh: Makanan, Gaji" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-500 mb-1">Tipe</label>
+                    <select id="category-type" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                        <option value="">Pilih tipe</option>
+                        <option value="income">Pemasukan</option>
+                        <option value="expense">Pengeluaran</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="flex-1 py-2 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
+                    <button type="button" onclick="closeCategoryForm()" class="flex-1 py-2 text-sm font-medium border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/40" id="delete-account-modal" style="display:none">
+        <div class="bg-white rounded-2xl p-5 w-full max-w-sm mx-4 shadow-xl">
+            <h3 class="text-sm font-bold text-red-600 mb-2">Hapus Akun</h3>
+            <p class="text-sm text-gray-600 mb-4">Semua data transaksi, hutang, dan rekening akan ikut terhapus. Lanjutkan?</p>
+            <div class="flex gap-2">
+                <button id="confirm-delete-account" class="flex-1 py-2 text-sm font-medium bg-red-500 hover:bg-red-600 text-white rounded-lg">Hapus</button>
+                <button onclick="closeDeleteAccountModal()" class="flex-1 py-2 text-sm font-medium border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+    <script src="/static/settings.js"></script>
+</body>
+</html>

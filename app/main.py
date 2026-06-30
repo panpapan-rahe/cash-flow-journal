@@ -119,6 +119,13 @@ def transactions():
     if not g.user:
         return redirect(url_for("login"))
     return render_template("transactions.html", username=g.user["username"])
+
+@app.route("/settings")
+def settings():
+    if not g.user:
+        return redirect(url_for("login"))
+    return render_template("settings.html", username=g.user["username"])
+
 # ─── API: Transactions ──────────────────────────────────────────
 @app.route("/api/transactions", methods=["GET"])
 def get_transactions():
