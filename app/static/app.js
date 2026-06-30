@@ -208,7 +208,7 @@ function renderDebts(debts) {
         const statusClass = d.status === 'paid' ? 'status-paid' : 'status-active';
         const statusText = d.status === 'paid' ? 'Lunas' : 'Aktif';
         const nameLabel = d.debt_kind === 'opening'
-            ? `${d.person_name} <span class="badge badge-opening">Bawaan</span>`
+            ? `${d.person_name} <span title="Hutang Bawaan">📌</span>`
             : d.person_name;
 
         return `
