@@ -74,9 +74,9 @@
 
         <!-- Nav -->
         <nav class="flex-1 px-3 py-3 space-y-1 overflow-y-auto scroll-thin">
-            <button class="nav-item w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 bg-warm-100 text-warm-700" data-nav="dashboard">
+            <a href="/dashboard" class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 bg-warm-100 text-warm-700">
                 <span>📊</span> Dashboard
-            </button>
+            </a>
             <a href="/transactions" class="nav-item block px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600">
                 <span>💸</span> Transaksi
             </a>
@@ -85,6 +85,9 @@
             </button>
             <button class="nav-item w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" data-nav="categories">
                 <span>🏷️</span> Kategori
+            </button>
+            <button class="nav-item w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 text-gray-500 hover:bg-warm-50 hover:text-warm-600" id="sidebar-settings-btn">
+                <span>⚙️</span> Pengaturan
             </button>
         </nav>
 

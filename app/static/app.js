@@ -354,6 +354,15 @@ btnSettings.addEventListener('click', async () => {
     await loadAccountsSettings();
 });
 
+// Sidebar settings button
+const sidebarSettingsBtn = document.getElementById('sidebar-settings-btn');
+if (sidebarSettingsBtn) {
+    sidebarSettingsBtn.addEventListener('click', async () => {
+        settingsModal.style.display = 'flex';
+        await loadAccountsSettings();
+    });
+}
+
 document.getElementById('btn-delete-account').addEventListener('click', async () => {
     if (!confirm('Hapus akun ini? Semua data transaksi, hutang, dan rekening akan ikut terhapus.')) return;
     if (!confirm('Yakin? Tindakan ini tidak bisa dibatalkan.')) return;
