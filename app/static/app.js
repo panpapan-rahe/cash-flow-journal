@@ -824,10 +824,14 @@ async function loadAccountsGrid() {
             const balanceClass = balance < 0 ? 'negative' : '';
 
             return `
-                <div class="account-card">
-                    <button class="btn btn-sm btn-outline btn-detail" onclick="openAccountDetail(${acc.id}, '${acc.name}')">Detail</button>
-                    <div class="account-name">${acc.name}</div>
-                    <div class="account-balance ${balanceClass}">${formatCurrency(balance)}</div>
+                <div class="bg-white rounded-xl p-5 border border-warm-100 relative hover:border-warm-300 transition-colors shadow-sm hover:shadow">
+                    <button class="absolute top-3 right-3 text-[11px] text-warm-500 hover:text-warm-700 font-medium" onclick="openAccountDetail(${acc.id}, '${acc.name}')">Detail</button>
+                    <div class="text-sm font-bold text-gray-700 mb-1 truncate pr-12">${acc.name}</div>
+                    <div class="text-base font-bold ${balanceClass === 'negative' ? 'text-red-500' : 'text-warm-700'} mt-1">${formatCurrency(balance)}</div>
+                    <div class="flex gap-3 mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
+                        <span title="Pemasukan" class="text-green-600">+${formatCurrency(income)}</span>
+                        <span title="Pengeluaran" class="text-red-400">-${formatCurrency(expense)}</span>
+                    </div>
                 </div>
             `;
         }).join('');
@@ -837,7 +841,7 @@ async function loadAccountsGrid() {
         if (remainder > 0 && accounts.length > 0) {
             const dummyCount = 4 - remainder;
             for (let i = 0; i < dummyCount; i++) {
-                grid.innerHTML += `<div class="account-card account-card-empty"></div>`;
+                grid.innerHTML += `<div class="bg-transparent rounded-xl border border-dashed border-warm-200"></div>`;
             }
         }
 
