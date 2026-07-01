@@ -46,12 +46,13 @@
         .modal-overlay { animation: fadeIn 0.15s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Form inputs focus ring */
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px #ffe0b2;
-            border-color: #ff9800 !important;
-        }
+        /* Debt buttons */
+        .btn-circle { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s; border: 1px solid #e5e7eb; background: white; }
+        .btn-circle:hover { transform: scale(1.1); }
+        .btn-circle-success::after { content: '💰'; }
+        .btn-circle-danger::after { content: '🗑️'; }
+        .btn-circle-success:hover { background: #dcfce7; border-color: #22c55e; }
+        .btn-circle-danger:hover { background: #fee2e2; border-color: #ef4444; }
     </style>
 </head>
 <body class="bg-cream font-sans text-gray-800">
@@ -63,19 +64,17 @@
 
     <!-- ── Main Content ── -->
     <main class="flex-1 overflow-y-auto scroll-thin p-5 lg:p-7 bg-cream">
+        <main class="flex-1 overflow-y-auto scroll-thin p-5 lg:p-7 bg-cream">
+            <!-- Top bar -->
+            <header class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800">Dashboard</h2>
+                    <p class="text-xs text-gray-400">Ringkasan keuanganmu</p>
+                </div>
+                <!-- Pengaturan sudah ada di sidebar -->
+            </header>
 
-        <!-- Top bar -->
-        <header class="flex items-center justify-between mb-6">
-            <div>
-                <h2 class="text-lg font-bold text-gray-800">Dashboard</h2>
-                <p class="text-xs text-gray-400">Ringkasan keuanganmu</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <button id="btn-settings" class="px-3 py-1.5 text-sm font-medium bg-white border border-warm-200 rounded-lg hover:bg-warm-50 text-gray-600 transition">�️ Pengaturan</button>
-            </div>
-        </header>
-
-        <!-- Summary Cards -->
+            <!-- Summary Cards -->
         <section class="grid grid-cols-2 gap-4 mb-6">
             <div class="bg-white rounded-xl p-5 border border-warm-100">
                 <p class="text-xs text-gray-400 font-medium uppercase tracking-wide">Total Kepemilikan Saldo</p>
