@@ -250,9 +250,11 @@ window.closeDebtModal = function() {
     document.getElementById('pay-debt-id').value = '';
 };
 
-debtModal.addEventListener('click', (e) => {
-    if (e.target === debtModal) closeDebtModal();
-});
+if (debtModal) {
+    debtModal.addEventListener('click', (e) => {
+        if (e.target === debtModal) closeDebtModal();
+    });
+}
 
 debtForm.addEventListener('submit', async (e) => {
     e.preventDefault();

@@ -38,6 +38,85 @@
 
         <!-- Main -->
         <main class="flex-1 overflow-y-auto scroll-thin p-5 lg:p-7 bg-cream">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-bold text-gray-800">Pengaturan</h2>
+            </div>
+
+            <!-- Settings nav tabs -->
+            <div class="flex gap-2 mb-6">
+                <button class="settings-tab px-4 py-2 text-sm font-medium rounded-lg bg-warm-100 text-warm-700" data-tab="accounts">Rekening</button>
+                <button class="settings-tab px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:bg-warm-50" data-tab="categories">Kategori</button>
+                <button class="settings-tab px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:bg-warm-50" data-tab="extra">Extra</button>
+            </div>
+
+            <!-- Accounts panel -->
+            <div class="settings-content" id="content-accounts">
+                <div class="bg-white rounded-xl border border-warm-100 p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-semibold text-gray-700">Daftar Rekening</h3>
+                        <button id="btn-add-account" class="px-3 py-1.5 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg transition">+ Tambah</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-left text-gray-400 border-b border-gray-100">
+                                    <th class="pb-2 font-medium">Rekening</th>
+                                    <th class="pb-2 font-medium text-right">Saldo Awal</th>
+                                    <th class="pb-2 font-medium text-right">Pemasukan</th>
+                                    <th class="pb-2 font-medium text-right">Pengeluaran</th>
+                                    <th class="pb-2 font-medium text-right">Saldo</th>
+                                    <th class="pb-2 font-medium"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="accounts-settings-body">
+                                <tr><td colspan="6" class="text-center py-4 text-gray-400">Belum ada rekening</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button id="btn-delete-account" class="px-3 py-1.5 text-sm font-medium text-red-500 hover:bg-red-50 rounded-lg transition">Hapus Akun</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories panel -->
+            <div class="settings-content" id="content-categories" style="display:none">
+                <div class="bg-white rounded-xl border border-warm-100 p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-sm font-semibold text-gray-700">Daftar Kategori</h4>
+                        <button id="btn-add-category" class="px-3 py-1.5 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg transition">+ Tambah</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-left text-gray-400 border-b border-gray-100">
+                                    <th class="pb-2 font-medium">Nama Kategori</th>
+                                    <th class="pb-2 font-medium">Tipe</th>
+                                    <th class="pb-2 font-medium"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="categories-settings-body">
+                                <tr><td colspan="3" class="text-center py-4 text-gray-400">Belum ada kategori</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Extra panel -->
+            <div class="settings-content" id="content-extra" style="display:none">
+                <div class="bg-white rounded-xl border border-red-100 p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-base">⚠️</span>
+                        <h4 class="text-sm font-semibold text-red-600">Zona Bahaya</h4>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4">Hapus akun dan semua data terkait (transaksi, hutang, rekening, kategori). Tindakan ini <strong>tidak bisa dibatalkan</strong>.</p>
+                    <button id="btn-delete-account-extra" class="px-4 py-2 text-sm font-medium bg-red-500 hover:bg-red-600 text-white rounded-lg transition">Hapus Akun</button>
+                </div>
+            </div>
+        </main>
 
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-lg font-bold text-gray-800">Pengaturan</h2>

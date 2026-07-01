@@ -19,7 +19,8 @@ function initSettingsTabs() {
 
             const tabName = tab.dataset.tab;
             document.querySelectorAll('.settings-content').forEach(c => c.style.display = 'none');
-            document.getElementById('content-' + tabName).style.display = 'block';
+            const target = document.getElementById('content-' + tabName);
+            if (target) target.style.display = 'block';
         });
     });
 }
