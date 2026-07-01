@@ -256,26 +256,28 @@ if (debtModal) {
     });
 }
 
-debtForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const payload = {
-        person_name: document.getElementById('debt-name').value,
-        account_id: parseInt(document.getElementById('debt-account').value),
-        amount_total: parseFloat(document.getElementById('debt-amount').value),
-        admin_fee: parseFloat(document.getElementById('debt-admin').value) || 0,
-        description: document.getElementById('debt-desc').value
-    };
-    try {
-        await api('/api/debts', { method: 'POST', body: JSON.stringify(payload) });
-        closeDebtModal();
-        await loadDebts();
-        await loadAccountsGrid();
-        updateSummaryCards();
-        await updateAccountDropdowns();
-    } catch (e) {
-        alert('Gagal menambah hutang: ' + e.message);
-    }
-});
+if (debtForm) {
+    debtForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const payload = {
+            person_name: document.getElementById('debt-name').value,
+            account_id: parseInt(document.getElementById('debt-account').value),
+            amount_total: parseFloat(document.getElementById('debt-amount').value),
+            admin_fee: parseFloat(document.getElementById('debt-admin').value) || 0,
+            description: document.getElementById('debt-desc').value
+        };
+        try {
+            await api('/api/debts', { method: 'POST', body: JSON.stringify(payload) });
+            closeDebtModal();
+            await loadDebts();
+            await loadAccountsGrid();
+            updateSummaryCards();
+            await updateAccountDropdowns();
+        } catch (e) {
+            alert('Gagal: ' + e.message);
+        }
+    });
+}
 
 // Pay Modal
 const payModal = document.getElementById('pay-modal');
