@@ -522,14 +522,14 @@ async function loadAccountsSettings() {
 
             return `
                 <tr>
-                    <td><strong>${acc.name}</strong></td>
-                    <td class="amount-income">${formatCurrency(opening)}</td>
-                    <td class="amount-income">+ ${formatCurrency(income)}</td>
-                    <td class="amount-expense">- ${formatCurrency(expense)}</td>
-                    <td class="amount-transfer">- ${formatCurrency(transferOut)}</td>
-                    <td class="amount-transfer">+ ${formatCurrency(transferIn)}</td>
-                    <td class="${balanceClass}"><strong>${formatCurrency(balance)}</strong></td>
-                    <td>
+                    <td class="py-3 px-3 text-sm text-left"><strong>${acc.name}</strong></td>
+                    <td class="py-3 px-3 text-sm text-right amount-income">${formatCurrency(opening)}</td>
+                    <td class="py-3 px-3 text-sm text-right amount-income">+ ${formatCurrency(income)}</td>
+                    <td class="py-3 px-3 text-sm text-right amount-expense">- ${formatCurrency(expense)}</td>
+                    <td class="py-3 px-3 text-sm text-right amount-transfer">- ${formatCurrency(transferOut)}</td>
+                    <td class="py-3 px-3 text-sm text-right amount-transfer">+ ${formatCurrency(transferIn)}</td>
+                    <td class="py-3 px-3 text-sm text-right ${balanceClass}"><strong>${formatCurrency(balance)}</strong></td>
+                    <td class="py-3 px-3 text-sm text-right">
                         <button class="btn btn-sm btn-secondary" onclick="editAccount(${acc.id}, '${acc.name}', ${opening})">Edit</button>
                         <button class="btn btn-sm btn-danger" onclick="deleteAccount(${acc.id})">Hapus</button>
                     </td>
