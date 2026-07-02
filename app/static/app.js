@@ -592,8 +592,7 @@ async function loadAccountsSettings() {
                     <td class="py-3 px-3 text-sm text-right amount-transfer">+ ${formatCurrency(transferIn)}</td>
                     <td class="py-3 px-3 text-sm text-right ${balanceClass}"><strong>${formatCurrency(balance)}</strong></td>
                     <td class="py-3 px-3 text-sm text-right">
-                        <button class="btn btn-sm btn-secondary" onclick="editAccount(${acc.id}, '${acc.name}', ${opening})">Edit</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteAccount(${acc.id})">Hapus</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteAccount(acc.id)">Hapus</button>
                     </td>
                 </tr>
             `;
@@ -637,14 +636,6 @@ async function loadCategoriesSettings() {
         console.warn('Failed to load categories settings', e);
     }
 }
-
-window.editAccount = function(id, name, opening_balance) {
-    document.getElementById('account-form-title').textContent = 'Edit Rekening';
-    document.getElementById('account-id').value = id;
-    document.getElementById('account-name').value = name;
-    document.getElementById('account-opening-balance').value = opening_balance || 0;
-    accountFormModal.style.display = 'flex';
-};
 
 window.deleteAccount = async function(id) {
     if (!confirm('Hapus rekening ini? Transaksi terkait tidak akan dihapus.')) return;
