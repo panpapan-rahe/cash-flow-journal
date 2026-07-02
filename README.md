@@ -1,8 +1,16 @@
-# Cashflow Journal v1.0.0
+# Cashflow Journal v1.5.0
 
 Catatan keuangan personal berbasis web: dashboard single-page untuk mencatat pemasukan, pengeluaran, mutasi, dan hutang. Dibangun dengan **Flask + SQLite per-user** dan di-deploy via **Docker** di port `9102`.
 
-## Fitur
+## Fitur v1.5.0
+
+- Hapus tombol pengaturan dari header dashboard (karena sudah ada di sidebar yang konsisten di semua halaman)
+- Perbaikan tombol **Bayar** pada daftar hutang
+- Perbaikan error JavaScript pada dashboard
+- Sidebar konsisten di seluruh halaman
+- Halaman **Pengaturan** terpisah yang lebih rapi
+
+## Fitur Utama
 
 - Dashboard single-page: ringkasan rekening, form input transaksi, riwayat, dan daftar hutang
 - Multi-user auth dengan session dan database SQLite terpisah per user (`data/user_{id}.db`)
