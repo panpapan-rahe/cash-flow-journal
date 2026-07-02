@@ -169,9 +169,31 @@ document.getElementById('tx-type').addEventListener('change', (e) => {
 
 // ─── Init ───
 document.addEventListener('DOMContentLoaded', async () => {
+    await loadAccountsGrid();
     await updateAccountDropdowns();
     await updateCategoryDropdown();
     const txDate = document.getElementById('tx-date');
     if (txDate) txDate.value = todayISO();
     await loadTransactions();
 });
+
+// ─── Accounts Grid ───
+async function loadAccountsGrid() {
+    try {
+        const accounts = await api('/api/accounts');
+        const grid = document.getElementById('accounts-grid');
+        if (!grid) return;
+        if (accounts.length === 0) {
+            grid.innerHTML = '<div class="bg-white rounded-xl p-4 border border-warm-100 col-span-full text-center text-sm text-gray-400">Belum ada rekening. Buka <strong>Pengaturan</strong> untuk menambah.</div>';
+            return;
+        }
+        grid.innerHTML = accounts.map(a => `
+            <div class="bg-white rounded-xl p-4 border border-warm-100">
+                <p class="text-xs text-gray-400 font-medium truncate">${a.name}</p>
+                <p class="text-sm font-bold text-gray-800 mt-1">${formatCurrency(a.balance || 0)}</p>
+            </div>
+        `).join('');
+    } catch (e) {
+        console.warn('Failed to load accounts grid', e);
+    }
+}
