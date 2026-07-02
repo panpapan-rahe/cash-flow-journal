@@ -364,7 +364,7 @@ document.querySelectorAll('.settings-tab').forEach(nav => {
     });
 });
 
-if (btnSettings) if (btnSettings) btnSettings.addEventListener('click', async () => {
+if (btnSettings) btnSettings.addEventListener('click', async () => {
     settingsModal.style.display = 'flex';
     
     // Force show accounts tab and load data
@@ -947,6 +947,23 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load data
     checkAuth();
+    
+    // If on the settings page, auto-load accounts & categories tabs
+    if (document.getElementById('accounts-settings-body')) {
+        console.log('[DEBUG] Settings page detected, loading accounts & categories');
+        setTimeout(() => {
+            loadAccountsSettings();
+            loadCategoriesSettings();
+            // Set initial tab visual state
+            document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('bg-warm-100','text-warm-700'));
+            document.querySelectorAll('.settings-tab').forEach(t => t.classList.add('text-gray-500','hover:bg-warm-50'));
+            const accTab = document.querySelector('.settings-tab[data-tab="accounts"]');
+            if (accTab) {
+                accTab.classList.remove('text-gray-500','hover:bg-warm-50');
+                accTab.classList.add('bg-warm-100','text-warm-700');
+            }
+        }, 50);
+    }
 });
 
 function attachTransactionFormListener() {
