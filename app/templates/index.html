@@ -61,7 +61,15 @@
             </div>
             <div class="bg-white rounded-xl p-5 border border-warm-100">
                 <p class="text-xs text-gray-400 font-medium uppercase tracking-wide">Hutang Aktif</p>
-                <p class="text-lg font-bold text-warm-600 mt-1" id="sum-debt">Rp 0</p>
+                <div class="mt-2">
+                    <div class="flex justify-between text-sm font-bold text-warm-600 mb-1">
+                        <span id="sum-debt">Rp 0</span>
+                        <span class="text-gray-400" id="debt-ratio">0/0</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2">
+                        <div id="debt-progress" class="bg-warm-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
             </div>
         </section>
 

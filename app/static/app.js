@@ -928,6 +928,9 @@ function updateSummaryCards() {
 
     // Sum active debt
     const debtEl = document.getElementById('sum-debt');
+    const ratioEl = document.getElementById('debt-ratio');
+    const progressEl = document.getElementById('debt-progress');
+    
     if (debtEl && typeof allDebts !== 'undefined' && Array.isArray(allDebts)) {
         const totalDebt = allDebts.reduce((sum, d) => {
             if (d.status === 'paid') return sum;
@@ -935,8 +938,24 @@ function updateSummaryCards() {
             const total = parseFloat(d.amount_total) || 0;
             return sum + (total - paid);
         }, 0);
+        
+        const totalAmount = allDebts.reduce((sum, d) => {
+             if (d.status === 'paid') return sum;
+             return sum + (parseFloat(d.amount_total) || 0);
+        }, 0);
+
+        const totalPaid = allDebts.reduce((sum, d) => {
+             if (d.status === 'paid') return sum;
+             return sum + (parseFloat(d.total_paid) || 0);
+        }, 0);
+
         debtEl.textContent = formatCurrency(totalDebt);
-        console.log('[DEBUG] Debt updated:', totalDebt);
+        if (ratioEl) ratioEl.textContent = `${formatCurrency(totalDebt)} / ${formatCurrency(totalAmount)}`;
+        if (progressEl) {
+            const pct = totalAmount > 0 ? Math.round((totalPaid / totalAmount) * 100) : 0;
+            progressEl.style.width = `${pct}%`;
+        }
+        console.log('[DEBUG] Debt summary updated');
     } else {
         console.warn('[DEBUG] allDebts not ready or debtEl missing');
     }
