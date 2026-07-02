@@ -369,8 +369,8 @@ if (btnSettings) btnSettings.addEventListener('click', async () => {
     await loadAccountsSettings();
 });
 
-const btnDeleteAccount = document.getElementById('btn-delete-account');
-if (btnDeleteAccount) btnDeleteAccount.addEventListener('click', async () => {
+const btnDeleteAccountExtra = document.getElementById('btn-delete-account-extra');
+if (btnDeleteAccountExtra) btnDeleteAccountExtra.addEventListener('click', async () => {
     if (!confirm('Hapus akun ini? Semua data transaksi, hutang, dan rekening akan ikut terhapus.')) return;
     if (!confirm('Yakin? Tindakan ini tidak bisa dibatalkan.')) return;
     try {
@@ -536,11 +536,11 @@ async function loadCategoriesSettings() {
 
         tbody.innerHTML = categories.map(cat => {
             const typeLabel = cat.type === 'income' ? 'Pemasukan' : 'Pengeluaran';
-            const typeBadge = cat.type === 'income' ? 'badge-income' : 'badge-expense';
+            const typeBadge = cat.type === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700';
             return `
                 <tr>
                     <td><strong>${cat.name}</strong></td>
-                    <td><span class="badge ${typeBadge}">${typeLabel}</span></td>
+                    <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${typeBadge}">${typeLabel}</span></td>
                     <td>
                         <button class="btn btn-sm btn-danger" onclick="deleteCategory(${cat.id})">Hapus</button>
                     </td>
@@ -669,10 +669,10 @@ function renderForcedCategories() {
     } else {
         container.innerHTML = forcedCategories.map((cat, i) => {
             const typeLabel = cat.type === 'income' ? 'Pemasukan' : 'Pengeluaran';
-            const typeBadge = cat.type === 'income' ? 'badge-income' : 'badge-expense';
+            const typeBadge = cat.type === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700';
             return `
                 <div class="forced-item">
-                    <span>${cat.name} <span class="badge ${typeBadge}">${typeLabel}</span></span>
+                    <span>${cat.name} <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${typeBadge}">${typeLabel}</span></span>
                     <div class="item-actions">
                         <button class="btn btn-sm btn-danger" onclick="removeForcedCategory(${i})">Hapus</button>
                     </div>
