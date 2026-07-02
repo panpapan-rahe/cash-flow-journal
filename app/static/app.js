@@ -409,19 +409,19 @@ window.closeCategoryFormModal = function() {
     categoryFormModal.style.display = 'none';
 };
 
-settingsModal.addEventListener('click', (e) => {
+if (settingsModal) settingsModal.addEventListener('click', (e) => {
     if (e.target === settingsModal) closeSettingsModal();
 });
 
-accountFormModal.addEventListener('click', (e) => {
+if (accountFormModal) accountFormModal.addEventListener('click', (e) => {
     if (e.target === accountFormModal && !accountFormModal.classList.contains('forced')) closeAccountFormModal();
 });
 
-categoryFormModal.addEventListener('click', (e) => {
+if (categoryFormModal) categoryFormModal.addEventListener('click', (e) => {
     if (e.target === categoryFormModal) closeCategoryFormModal();
 });
 
-forcedSetupModal.addEventListener('click', (e) => {
+if (forcedSetupModal) forcedSetupModal.addEventListener('click', (e) => {
     if (e.target === forcedSetupModal) {
         // Cannot close unless setup is complete
         alert('Anda harus menyelesaikan setup terlebih dahulu.');
