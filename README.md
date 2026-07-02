@@ -1,8 +1,21 @@
-# Cashflow Journal v1.5.1 (Bug Fixed)
-
-Catatan keuangan personal berbasis web: dashboard single-page untuk mencatat pemasukan, pengeluaran, mutasi, dan hutang. Dibangun dengan **Flask + SQLite per-user** dan di-deploy via **Docker** di port `9102`.
-
-## Fitur v1.5.1 (Bug Fixed)
+1|# Cashflow Journal v1.5.2 (Bug Fixed)
+2|
+3|Catatan keuangan personal berbasis web: dashboard single-page untuk mencatat pemasukan, pengeluaran, mutasi, dan hutang. Dibangun dengan **Flask + SQLite per-user** dan di-deploy via **Docker** di port `9102`.
+4|
+5|## Fitur v1.5.2 (Bug Fixed)
+6|
+7|- Perbaikan alignment tabel di seluruh halaman (Dashboard, Transaksi, Hutang, Pengaturan)
+8|- Pemisahan tabel Kategori menjadi card grid (Pemasukan & Pengeluaran terpisah)
+9|- Tombol **Hapus Akun** dipindahkan ke tab **Extra** (Zona Bahaya)
+10|- Kolom **Aksi** di tabel Hutang digabung dengan tombol **Bayar** dan **Hapus** dalam satu kolom kompak
+11|- Validasi **overpayment**: peringatan jika jumlah bayar melebihi sisa hutang
+12|- **Hutang Bawaan (opening)** tidak bisa dihapus — tombol hapus disembunyikan, backend tolak dengan error
+13|- Fungsi API helper yang lebih robust: timeout, log, error handling untuk HTML response
+14|- Perbaikan konsistensi field payload (`amount`) pada pembayaran hutang
+15|- Halaman **Transaksi** sudah memiliki alignment yang konsisten dengan dashboard
+16|- Badge tipe pada card kategori dihilangkan karena sudah dipisah berdasarkan tipe
+17|
+## Fitur v1.5.1
 
 - Perbaikan inisialisasi halaman **Pengaturan** agar list rekening tampil otomatis saat halaman dibuka
 - Perbaikan listener JavaScript yang rentan `null reference` pada beberapa elemen UI
@@ -43,10 +56,14 @@ Catatan keuangan personal berbasis web: dashboard single-page untuk mencatat pem
 │   ├── models.py              # User auth + user-level DB management
 │   ├── static
 │   │   ├── app.js             # Frontend logic
+│   │   ├── transactions.js    # Frontend logic (transactions page)
 │   │   └── style.css          # Warm theme
 │   └── templates
-│       ├── index.html         # Dashboard
-│       └── login.html         # Login / Register
+│       ├── index.html         # Dashboard (main page)
+│       ├── login.html         # Login / Register
+│       ├── transactions.html  # Full transaction history
+│       ├── settings.html      # Account, category & extra settings
+│       └── _sidebar.html      # Sidebar component (included via Jinja)
 ├── data                       # Per-user SQLite databases (runtime)
 ├── docker-compose.yml
 ├── Dockerfile
@@ -127,6 +144,6 @@ Summary:
 - Mutasi keluar: saldo berkurang `amount + admin_fee`
 - Mutasi masuk: saldo bertambah `amount` saja
 - Hutang biasa: otomatis membuat transaksi pengeluaran saat dibuat
-- Hutang bawaan: tidak membuat transaksi saat dibuat; saat dibayar, terkait kredit ke rekening terkait
+- Hutang bawaan: tidak membuat transaksi saat dibuat; saat dibayar, terkait kredit ke rekening terkait. **Tidak bisa dihapus** untuk menjaga integritas data awal
 - Pembayaran hutang dari rekening berbeda tercatat sebagai satu transfer record
 - Hapus akun: menghapus user dari `users.db` + menghapus file `data/user_{id}.db`
