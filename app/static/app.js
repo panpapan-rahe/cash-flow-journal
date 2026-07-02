@@ -300,11 +300,11 @@ window.closePayModal = function() {
     if (payAccount) payAccount.disabled = false;
 };
 
-payModal.addEventListener('click', (e) => {
+if (payModal) payModal.addEventListener('click', (e) => {
     if (e.target === payModal) closePayModal();
 });
 
-payForm.addEventListener('submit', async (e) => {
+if (payForm) payForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const debtId = document.getElementById('pay-debt-id').value;
     const payAccount = document.getElementById('pay-account');
@@ -347,26 +347,30 @@ const btnSettings = document.getElementById('btn-settings');
 const btnAddAccount = document.getElementById('btn-add-account');
 
 // Settings nav switching
-document.querySelectorAll('.settings-nav-item').forEach(nav => {
+document.querySelectorAll('.settings-tab').forEach(nav => {
     nav.addEventListener('click', () => {
-        document.querySelectorAll('.settings-nav-item').forEach(n => n.classList.remove('active'));
-        document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
-        nav.classList.add('active');
+        document.querySelectorAll('.settings-tab').forEach(n => n.classList.remove('bg-warm-100','text-warm-700'));
+        document.querySelectorAll('.settings-tab').forEach(n => n.classList.add('text-gray-500','hover:bg-warm-50'));
+        document.querySelectorAll('.settings-content').forEach(p => p.style.display = 'none');
+        nav.classList.remove('text-gray-500','hover:bg-warm-50');
+        nav.classList.add('bg-warm-100','text-warm-700');
         
-        const panelId = 'panel-' + nav.dataset.panel;
-        document.getElementById(panelId).classList.add('active');
+        const panelId = 'content-' + nav.dataset.tab;
+        const panel = document.getElementById(panelId);
+        if (panel) panel.style.display = 'block';
         
-        if (nav.dataset.panel === 'accounts') loadAccountsSettings();
-        if (nav.dataset.panel === 'categories') loadCategoriesSettings();
+        if (nav.dataset.tab === 'accounts') loadAccountsSettings();
+        if (nav.dataset.tab === 'categories') loadCategoriesSettings();
     });
 });
 
-btnSettings.addEventListener('click', async () => {
+if (btnSettings) btnSettings.addEventListener('click', async () => {
     settingsModal.style.display = 'flex';
     await loadAccountsSettings();
 });
 
-document.getElementById('btn-delete-account').addEventListener('click', async () => {
+const btnDeleteAccount = document.getElementById('btn-delete-account');
+if (btnDeleteAccount) btnDeleteAccount.addEventListener('click', async () => {
     if (!confirm('Hapus akun ini? Semua data transaksi, hutang, dan rekening akan ikut terhapus.')) return;
     if (!confirm('Yakin? Tindakan ini tidak bisa dibatalkan.')) return;
     try {
@@ -377,14 +381,15 @@ document.getElementById('btn-delete-account').addEventListener('click', async ()
     }
 });
 
-btnAddAccount.addEventListener('click', () => {
+if (btnAddAccount) btnAddAccount.addEventListener('click', () => {
     document.getElementById('account-form-title').textContent = 'Tambah Rekening';
     document.getElementById('account-id').value = '';
     document.getElementById('account-name').value = '';
     accountFormModal.style.display = 'flex';
 });
 
-document.getElementById('btn-add-category').addEventListener('click', () => {
+const btnAddCategory = document.getElementById('btn-add-category');
+if (btnAddCategory) btnAddCategory.addEventListener('click', () => {
     document.getElementById('category-id').value = '';
     document.getElementById('category-name').value = '';
     document.querySelector('input[name="category-type"][value="income"]').checked = true;
@@ -424,7 +429,8 @@ forcedSetupModal.addEventListener('click', (e) => {
 });
 
 // Account form submit (create or update)
-document.getElementById('account-form').addEventListener('submit', async (e) => {
+const accountForm = document.getElementById('account-form');
+if (accountForm) accountForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('account-id').value;
     const name = document.getElementById('account-name').value.trim();
@@ -461,7 +467,8 @@ document.getElementById('account-form').addEventListener('submit', async (e) => 
 });
 
 // Category form submit
-document.getElementById('category-form').addEventListener('submit', async (e) => {
+const categoryForm = document.getElementById('category-form');
+if (categoryForm) categoryForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('category-name').value.trim();
     const type = document.querySelector('input[name="category-type"]:checked').value;
@@ -594,7 +601,8 @@ function showForcedSetupModal() {
 }
 
 // Sheet 1: Accounts
-document.getElementById('btn-add-forced-account').addEventListener('click', () => {
+const btnAddForcedAccount = document.getElementById('btn-add-forced-account');
+if (btnAddForcedAccount) btnAddForcedAccount.addEventListener('click', () => {
     const name = document.getElementById('forced-account-name').value.trim() || 'Rekening';
     const opening = parseFloat(document.getElementById('forced-account-opening').value) || 0;
     if (name && name.trim()) {
@@ -630,7 +638,8 @@ window.removeForcedAccount = function(index) {
     renderForcedOpeningDebts();
 };
 
-document.getElementById('btn-forced-next').addEventListener('click', () => {
+const btnForcedNext = document.getElementById('btn-forced-next');
+if (btnForcedNext) btnForcedNext.addEventListener('click', () => {
     if (forcedAccounts.length === 0) {
         alert('Minimal tambah 1 rekening terlebih dahulu.');
         return;
@@ -640,7 +649,8 @@ document.getElementById('btn-forced-next').addEventListener('click', () => {
 });
 
 // Sheet 2: Categories
-document.getElementById('btn-add-forced-category').addEventListener('click', () => {
+const btnAddForcedCategory = document.getElementById('btn-add-forced-category');
+if (btnAddForcedCategory) btnAddForcedCategory.addEventListener('click', () => {
     const name = document.getElementById('forced-category-name').value.trim();
     const type = document.querySelector('input[name="forced-cat-type"]:checked').value;
     if (!name) {
@@ -701,7 +711,8 @@ function refreshOpeningDebtAccountSelect() {
     select.innerHTML = '<option value="">-- Pilih Rekening --</option>' + forcedAccounts.map(acc => `<option value="${acc.tempId}">${acc.name}</option>`).join('');
 }
 
-document.getElementById('btn-forced-next-debt').addEventListener('click', () => {
+const btnForcedNextDebt = document.getElementById('btn-forced-next-debt');
+if (btnForcedNextDebt) btnForcedNextDebt.addEventListener('click', () => {
     if (forcedCategories.length === 0) {
         alert('Minimal tambah 1 kategori terlebih dahulu.');
         return;
@@ -712,7 +723,8 @@ document.getElementById('btn-forced-next-debt').addEventListener('click', () => 
     renderForcedOpeningDebts();
 });
 
-document.getElementById('btn-add-forced-opening-debt').addEventListener('click', () => {
+const btnAddForcedOpeningDebt = document.getElementById('btn-add-forced-opening-debt');
+if (btnAddForcedOpeningDebt) btnAddForcedOpeningDebt.addEventListener('click', () => {
     const name = document.getElementById('forced-opening-debt-name').value.trim() || 'Hutang Bawaan';
     const accountTempId = document.getElementById('forced-opening-debt-account').value;
     const account = forcedAccounts.find(a => a.tempId === accountTempId);
@@ -749,17 +761,20 @@ window.removeForcedCategory = function(index) {
     renderForcedCategories();
 };
 
-document.getElementById('btn-forced-back').addEventListener('click', () => {
+const btnForcedBack = document.getElementById('btn-forced-back');
+if (btnForcedBack) btnForcedBack.addEventListener('click', () => {
     document.getElementById('forced-sheet-2').style.display = 'none';
     document.getElementById('forced-sheet-1').style.display = 'block';
 });
 
-document.getElementById('btn-forced-back-debt').addEventListener('click', () => {
+const btnForcedBackDebt = document.getElementById('btn-forced-back-debt');
+if (btnForcedBackDebt) btnForcedBackDebt.addEventListener('click', () => {
     document.getElementById('forced-sheet-3').style.display = 'none';
     document.getElementById('forced-sheet-2').style.display = 'block';
 });
 
-document.getElementById('btn-forced-selesai').addEventListener('click', async () => {
+const btnForcedSelesai = document.getElementById('btn-forced-selesai');
+if (btnForcedSelesai) btnForcedSelesai.addEventListener('click', async () => {
     if (forcedCategories.length === 0) {
         alert('Minimal tambah 1 kategori terlebih dahulu.');
         return;
