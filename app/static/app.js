@@ -311,9 +311,9 @@ if (payForm) payForm.addEventListener('submit', async (e) => {
     const payAccount = document.getElementById('pay-account');
     const payload = {
         payment_account_id: parseInt(payAccount.value),
-        amount: parseFloat(document.getElementById('pay-amount').value),
+        amount_paid: parseFloat(document.getElementById('pay-amount').value),
         admin_fee: parseFloat(document.getElementById('pay-admin').value) || 0,
-        note: document.getElementById('pay-note').value,
+        note: '',
         date: todayISO()
     };
     try {
