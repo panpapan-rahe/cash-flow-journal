@@ -197,3 +197,34 @@ async function loadAccountsGrid() {
         console.warn('Failed to load accounts grid', e);
     }
 }
+
+// ─── Accounts Grid ───
+async function loadAccountsGrid() {
+    try {
+        const accounts = await api('/api/accounts');
+        const grid = document.getElementById('accounts-grid');
+        if (!grid) return;
+        if (accounts.length === 0) {
+            grid.innerHTML = '<div class="bg-white rounded-xl p-4 border border-warm-100 col-span-full text-center text-sm text-gray-400">Belum ada rekening. Buka <strong>Pengaturan</strong> untuk menambah.</div>';
+            return;
+        }
+        grid.innerHTML = accounts.map(a => {
+            const income = a.income || 0;
+            const expense = a.expense || 0;
+            const transferOut = a.transfer_out || 0;
+            const transferIn = a.transfer_in || 0;
+            const opening = a.opening_balance || 0;
+            const balance = a.balance ?? (opening + income - expense - transferOut + transferIn);
+            const balanceClass = balance < 0 ? 'text-red-500' : 'text-warm-700';
+
+            return `
+                <div class="bg-white rounded-xl p-4 border border-warm-100 shadow-sm cursor-pointer hover:border-warm-300 transition" onclick="openAccountDetail(${a.id}, '${a.name}')">
+                    <p class="text-xs text-gray-400 font-medium truncate">${a.name}</p>
+                    <p class="text-sm font-bold ${balanceClass} mt-1">${formatCurrency(balance)}</p>
+                </div>
+            `;
+        }).join('');
+    } catch (e) {
+        console.warn('Failed to load accounts grid', e);
+    }
+}
