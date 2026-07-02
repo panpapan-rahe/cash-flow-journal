@@ -269,7 +269,7 @@ function renderDebts(debts) {
                 <td class="py-3 px-3 text-sm text-right" colspan="2">
                     <div class="flex items-center justify-end gap-1">
                         ${!isPaid ? `<button class="btn-circle btn-circle-success" onclick="openPayModal(${d.id})" aria-label="Bayar hutang" title="Bayar hutang"></button>` : ''}
-                        <button class="btn-circle btn-circle-danger" onclick="deleteDebt(${d.id})" aria-label="Hapus hutang" title="Hapus hutang"></button>
+                        ${d.debt_kind !== 'opening' ? `<button class="btn-circle btn-circle-danger" onclick="deleteDebt(${d.id})" aria-label="Hapus hutang" title="Hapus hutang"></button>` : ''}
                     </div>
                 </td>
             </tr>

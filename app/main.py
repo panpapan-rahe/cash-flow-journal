@@ -375,6 +375,13 @@ def delete_debt(debt_id):
     if not g.user:
         return jsonify({"error": "Unauthorized"}), 401
     db = get_db(g.user["id"])
+    debt = db.execute("SELECT id, debt_kind FROM debts WHERE id = ?", (debt_id,)).fetchone()
+    if not debt:
+        db.close()
+        return jsonify({"error": "Debt not found"}), 404
+    if debt["debt_kind"] == "opening":
+        db.close()
+        return jsonify({"error": "Hutang bawaan tidak bisa dihapus"}), 400
     payment_rows = db.execute("SELECT transaction_id FROM debt_payments WHERE debt_id = ? AND transaction_id IS NOT NULL", (debt_id,)).fetchall()
     for row in payment_rows:
         db.execute("DELETE FROM transactions WHERE id = ?", (row["transaction_id"],))
