@@ -222,11 +222,11 @@ function renderDebts(debts) {
                 <td class="py-3 px-3 text-sm text-right">${formatCurrency(d.total_paid || 0)}</td>
                 <td class="py-3 px-3 text-sm text-right ${isPaid ? 'text-green-600' : 'text-warm-600'} font-semibold">${formatCurrency(remaining)}</td>
                 <td class="py-3 px-3 text-sm text-right text-gray-600">${formatCurrency(d.total_paid || 0)} / ${formatCurrency(d.amount_total)}</td>
-                <td class="py-3 px-3 text-sm text-right">
-                    ${!isPaid ? `<button class="btn-circle btn-circle-success" onclick="openPayModal(${d.id})" aria-label="Bayar hutang" title="Bayar hutang"></button>` : ''}
-                </td>
-                <td class="py-3 px-3 text-sm text-right">
-                    <button class="btn-circle btn-circle-danger" onclick="deleteDebt(${d.id})" aria-label="Hapus hutang" title="Hapus hutang"></button>
+                <td class="py-3 px-3 text-sm text-right" colspan="2">
+                    <div class="flex items-center justify-end gap-1">
+                        ${!isPaid ? `<button class="btn-circle btn-circle-success" onclick="openPayModal(${d.id})" aria-label="Bayar hutang" title="Bayar hutang"></button>` : ''}
+                        <button class="btn-circle btn-circle-danger" onclick="deleteDebt(${d.id})" aria-label="Hapus hutang" title="Hapus hutang"></button>
+                    </div>
                 </td>
             </tr>
         `;
