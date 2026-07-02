@@ -209,8 +209,8 @@ function renderDebts(debts) {
 
     tbody.innerHTML = debts.map(d => {
         const remaining = d.amount_total - (d.total_paid || 0);
-        const statusClass = d.status === 'paid' ? 'status-paid' : 'status-active';
-        const statusText = d.status === 'paid' ? 'Lunas' : 'Aktif';
+        const isPaid = d.status === 'paid';
+        const pctPaid = d.amount_total > 0 ? Math.min(100, Math.round(((d.total_paid || 0) / d.amount_total) * 100)) : 0;
         const nameLabel = d.debt_kind === 'opening'
             ? `${d.person_name} <span title="Hutang Bawaan">📌</span>`
             : d.person_name;
@@ -221,10 +221,19 @@ function renderDebts(debts) {
                 <td>${d.account_name || '-'}</td>
                 <td>${formatCurrency(d.amount_total)}</td>
                 <td>${formatCurrency(d.total_paid || 0)}</td>
-                <td>${formatCurrency(remaining)}</td>
-                <td><span class="${statusClass}">${statusText}</span></td>
+                <td class="${isPaid ? 'text-green-600' : 'text-warm-600'} font-semibold">${formatCurrency(remaining)}</td>
+                <td class="min-w-[140px]">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-500 w-[36px] text-right shrink-0">${isPaid ? 'Lunas' : (pctPaid < 50 ? pctPaid + '%' : '')}</span>
+                        <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <div class="h-full rounded-full transition-all duration-300 ${isPaid ? 'bg-green-400' : 'bg-warm-400'}" style="width:${pctPaid}%"></div>
+                        </div>
+                        <span class="text-xs text-gray-400 w-[36px] shrink-0">${isPaid ? '100%' : pctPaid + '%'}</span>
+                    </div>
+                    <div class="text-[11px] text-gray-400 mt-1 text-center">${formatCurrency(remaining)} / ${formatCurrency(d.amount_total)}</div>
+                </td>
                 <td class="debt-actions">
-                    ${d.status !== 'paid' ? `<button class="btn-circle btn-circle-success" onclick="openPayModal(${d.id})" aria-label="Bayar hutang" title="Bayar hutang"></button>` : ''}
+                    ${!isPaid ? `<button class="btn-circle btn-circle-success" onclick="openPayModal(${d.id})" aria-label="Bayar hutang" title="Bayar hutang"></button>` : ''}
                     <button class="btn-circle btn-circle-danger" onclick="deleteDebt(${d.id})" aria-label="Hapus hutang" title="Hapus hutang"></button>
                 </td>
             </tr>

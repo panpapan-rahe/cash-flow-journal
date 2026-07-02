@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cashflow - Dashboard</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='72' font-size='72' text-anchor='middle'%3E�%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='72' font-size='72' text-anchor='middle'%3E%F0%9F%92%B0%3C/text%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -31,33 +31,14 @@
         };
     </script>
     <style>
-        /* Compact scrollbar */
         .scroll-thin::-webkit-scrollbar { width: 6px; height: 6px; }
         .scroll-thin::-webkit-scrollbar-thumb { background: #ffe0b2; border-radius: 3px; }
-        .scroll-thin::-webkit-scrollbar-thumb:hover { background: #ffcc80; }
-
-        /* Sidebar nav hover/active transitions */
-        .nav-item { transition: background-color 0.15s, color 0.15s; }
-
-        /* Table row breathability — target TDs since JS generates <tr> dynamically */
-        table.text-sm td { padding: 10px 6px; vertical-align: middle; }
-
-        /* Modal overlay */
-        .modal-overlay { animation: fadeIn 0.15s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Debt buttons */
-        .btn-circle { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s; border: 1px solid #e5e7eb; background: white; }
-        .btn-circle:hover { transform: scale(1.1); }
-        .btn-circle-success::after { content: '💰'; }
-        .btn-circle-danger::after { content: '🗑️'; }
-        .btn-circle-success:hover { background: #dcfce7; border-color: #22c55e; }
-        .btn-circle-danger:hover { background: #fee2e2; border-color: #ef4444; }
+        .nav-item { transition: background-color 0.15s, color: 0.15s; }
     </style>
 </head>
 <body class="bg-cream font-sans text-gray-800">
 
-<!-- ── Layout ── -->
+<!-- ═══ Layout ── -->
 <div class="flex h-screen overflow-hidden">
 
     {% include '_sidebar.html' %}
@@ -72,7 +53,7 @@
             </div>
         </header>
 
-            <!-- Summary Cards -->
+        <!-- Summary Cards -->
         <section class="grid grid-cols-2 gap-4 mb-6">
             <div class="bg-white rounded-xl p-5 border border-warm-100">
                 <p class="text-xs text-gray-400 font-medium uppercase tracking-wide">Total Kepemilikan Saldo</p>
@@ -123,8 +104,8 @@
 
         <!-- Debts Section -->
         <section class="bg-white rounded-xl p-6 border border-warm-100 mb-6">
-            <div class="flex items-center justify-between mb-3">
-                <h3 class="text-sm font-semibold text-gray-700">Hutang</h3>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-semibold text-gray-700">Hutang</h3>
                 <button id="btn-add-debt" class="w-7 h-7 flex items-center justify-center bg-warm-500 hover:bg-warm-600 text-white rounded-full text-lg leading-none transition" title="Tambah Hutang">+</button>
             </div>
             <div class="overflow-x-auto scroll-thin">
@@ -136,7 +117,7 @@
                             <th class="pb-4 pt-2 font-medium text-right">Total</th>
                             <th class="pb-4 pt-2 font-medium text-right">Dibayar</th>
                             <th class="pb-4 pt-2 font-medium text-right">Sisa</th>
-                            <th class="pb-4 pt-2 font-medium">Status</th>
+                            <th class="pb-4 pt-2 font-medium">Progress</th>
                             <th class="pb-4 pt-2 font-medium"></th>
                         </tr>
                     </thead>

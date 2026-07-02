@@ -154,6 +154,7 @@ document.getElementById('transaction-form').addEventListener('submit', async (e)
         await loadTransactions();
         await updateCategoryDropdown();
         await updateAccountDropdowns();
+        await loadAccountsGrid();
         if (typeof updateSummaryCards === 'function') updateSummaryCards();
     } catch (err) {
         alert('Gagal menyimpan: ' + err.message);
@@ -167,6 +168,107 @@ document.getElementById('tx-type').addEventListener('change', (e) => {
     updateCategoryDropdown();
 });
 
+// ─── Accounts Grid (same as dashboard) ───
+async function loadAccountsGrid() {
+    try {
+        const accounts = await api('/api/accounts');
+        const grid = document.getElementById('accounts-grid');
+        if (!grid) return;
+        if (accounts.length === 0) {
+            grid.innerHTML = '<div class="bg-white rounded-xl p-4 border border-warm-100 col-span-full text-center text-sm text-gray-400">Belum ada rekening. Buka <strong>Pengaturan</strong> untuk menambah.</div>';
+            return;
+        }
+        grid.innerHTML = accounts.map(acc => {
+            const income = acc.income || 0;
+            const expense = acc.expense || 0;
+            const transferOut = acc.transfer_out || 0;
+            const transferIn = acc.transfer_in || 0;
+            const opening = acc.opening_balance || 0;
+            const balance = acc.balance ?? (opening + income - expense - transferOut + transferIn);
+            const balanceClass = balance < 0 ? 'text-red-500' : 'text-warm-700';
+
+            return `
+                <div class="bg-white rounded-xl p-5 border border-warm-100 relative hover:border-warm-300 transition-colors shadow-sm hover:shadow">
+                    <button class="absolute top-3 right-3 text-[11px] text-warm-500 hover:text-warm-700 font-medium" onclick="openAccountDetail(${acc.id}, '${acc.name}')">Detail</button>
+                    <div class="text-sm font-bold text-gray-700 mb-1 truncate pr-12">${acc.name}</div>
+                    <div class="text-base font-bold ${balanceClass} mt-1">${formatCurrency(balance)}</div>
+                    <div class="flex gap-3 mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
+                        <span title="Pemasukan" class="text-green-600">+${formatCurrency(income)}</span>
+                        <span title="Pengeluaran" class="text-red-400">-${formatCurrency(expense)}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (e) {
+        console.warn('Failed to load accounts grid', e);
+    }
+}
+
+// ─── Account Detail Modal ───
+window.openAccountDetail = async function(accountId, accountName) {
+    const modal = document.getElementById('account-detail-modal');
+    const title = document.getElementById('account-detail-title');
+    const body = document.getElementById('account-detail-body');
+    if (!modal || !title || !body) return;
+
+    title.textContent = 'Detail — ' + accountName;
+    body.innerHTML = '<div class="text-sm text-gray-400 py-6 text-center">Memuat...</div>';
+    modal.style.display = 'flex';
+
+    try {
+        const accounts = await api('/api/accounts');
+        const acc = accounts.find(a => String(a.id) === String(accountId));
+        if (!acc) {
+            body.innerHTML = '<div class="text-sm text-gray-400 py-6 text-center">Data akun tidak ditemukan.</div>';
+            return;
+        }
+        const opening = acc.opening_balance || 0;
+        const income = acc.income || 0;
+        const expense = acc.expense || 0;
+        const transferOut = acc.transfer_out || 0;
+        const transferIn = acc.transfer_in || 0;
+        const balance = acc.balance ?? (opening + income - expense - transferOut + transferIn);
+        const balanceClass = balance < 0 ? 'text-red-500' : 'text-warm-700';
+
+        body.innerHTML = `
+            <div class="text-center mb-5">
+                <p class="text-xs text-gray-400 uppercase tracking-wide">Saldo Saat Ini</p>
+                <p class="text-2xl font-bold ${balanceClass} mt-1">${formatCurrency(balance)}</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="bg-green-50 rounded-lg p-4 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase tracking-wide">Saldo Awal</p>
+                    <p class="text-base font-bold text-gray-700 mt-1">${formatCurrency(opening)}</p>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase tracking-wide">Pemasukan</p>
+                    <p class="text-base font-bold text-green-600 mt-1">+ ${formatCurrency(income)}</p>
+                </div>
+                <div class="bg-red-50 rounded-lg p-4 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase tracking-wide">Pengeluaran</p>
+                    <p class="text-base font-bold text-red-500 mt-1">− ${formatCurrency(expense)}</p>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-4 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase tracking-wide">Mutasi Masuk</p>
+                    <p class="text-base font-bold text-blue-600 mt-1">+ ${formatCurrency(transferIn)}</p>
+                </div>
+                <div class="bg-amber-50 rounded-lg p-4 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase tracking-wide">Mutasi Keluar</p>
+                    <p class="text-base font-bold text-amber-600 mt-1">− ${formatCurrency(transferOut)}</p>
+                </div>
+            </div>
+        `;
+    } catch (e) {
+        body.innerHTML = '<div class="text-sm text-gray-400 py-6 text-center">Gagal memuat detail.</div>';
+    }
+};
+
+window.closeAccountDetailModal = function() {
+    const modal = document.getElementById('account-detail-modal');
+    if (modal) modal.style.display = 'none';
+};
+
 // ─── Init ───
 document.addEventListener('DOMContentLoaded', async () => {
     await loadAccountsGrid();
@@ -176,55 +278,3 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (txDate) txDate.value = todayISO();
     await loadTransactions();
 });
-
-// ─── Accounts Grid ───
-async function loadAccountsGrid() {
-    try {
-        const accounts = await api('/api/accounts');
-        const grid = document.getElementById('accounts-grid');
-        if (!grid) return;
-        if (accounts.length === 0) {
-            grid.innerHTML = '<div class="bg-white rounded-xl p-4 border border-warm-100 col-span-full text-center text-sm text-gray-400">Belum ada rekening. Buka <strong>Pengaturan</strong> untuk menambah.</div>';
-            return;
-        }
-        grid.innerHTML = accounts.map(a => `
-            <div class="bg-white rounded-xl p-4 border border-warm-100">
-                <p class="text-xs text-gray-400 font-medium truncate">${a.name}</p>
-                <p class="text-sm font-bold text-gray-800 mt-1">${formatCurrency(a.balance || 0)}</p>
-            </div>
-        `).join('');
-    } catch (e) {
-        console.warn('Failed to load accounts grid', e);
-    }
-}
-
-// ─── Accounts Grid ───
-async function loadAccountsGrid() {
-    try {
-        const accounts = await api('/api/accounts');
-        const grid = document.getElementById('accounts-grid');
-        if (!grid) return;
-        if (accounts.length === 0) {
-            grid.innerHTML = '<div class="bg-white rounded-xl p-4 border border-warm-100 col-span-full text-center text-sm text-gray-400">Belum ada rekening. Buka <strong>Pengaturan</strong> untuk menambah.</div>';
-            return;
-        }
-        grid.innerHTML = accounts.map(a => {
-            const income = a.income || 0;
-            const expense = a.expense || 0;
-            const transferOut = a.transfer_out || 0;
-            const transferIn = a.transfer_in || 0;
-            const opening = a.opening_balance || 0;
-            const balance = a.balance ?? (opening + income - expense - transferOut + transferIn);
-            const balanceClass = balance < 0 ? 'text-red-500' : 'text-warm-700';
-
-            return `
-                <div class="bg-white rounded-xl p-4 border border-warm-100 shadow-sm cursor-pointer hover:border-warm-300 transition" onclick="openAccountDetail(${a.id}, '${a.name}')">
-                    <p class="text-xs text-gray-400 font-medium truncate">${a.name}</p>
-                    <p class="text-sm font-bold ${balanceClass} mt-1">${formatCurrency(balance)}</p>
-                </div>
-            `;
-        }).join('');
-    } catch (e) {
-        console.warn('Failed to load accounts grid', e);
-    }
-}
