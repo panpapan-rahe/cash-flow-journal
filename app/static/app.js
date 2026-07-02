@@ -940,7 +940,7 @@ function updateSummaryCards() {
         }, 0);
 
         debtEl.textContent = formatCurrency(totalDebt);
-        if (ratioEl) ratioEl.textContent = `${formatCurrency(totalDebt)} / ${formatCurrency(totalAmount)}`;
+        if (ratioEl) ratioEl.textContent = `${formatCurrency(totalPaid)} / ${formatCurrency(totalAmount)}`;
         if (progressEl) {
             const pct = totalAmount > 0 ? Math.round((totalPaid / totalAmount) * 100) : 0;
             progressEl.style.width = `${pct}%`;
