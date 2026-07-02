@@ -364,8 +364,26 @@ document.querySelectorAll('.settings-tab').forEach(nav => {
     });
 });
 
-if (btnSettings) btnSettings.addEventListener('click', async () => {
+if (btnSettings) if (btnSettings) btnSettings.addEventListener('click', async () => {
     settingsModal.style.display = 'flex';
+    
+    // Force show accounts tab and load data
+    const accPanel = document.getElementById('content-accounts');
+    const catPanel = document.getElementById('content-categories');
+    const extraPanel = document.getElementById('content-extra');
+    if (accPanel) accPanel.style.display = 'block';
+    if (catPanel) catPanel.style.display = 'none';
+    if (extraPanel) extraPanel.style.display = 'none';
+    
+    // Set visual tab active
+    document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('bg-warm-100','text-warm-700'));
+    document.querySelectorAll('.settings-tab').forEach(t => t.classList.add('text-gray-500','hover:bg-warm-50'));
+    const accTab = document.querySelector('.settings-tab[data-tab="accounts"]');
+    if (accTab) {
+        accTab.classList.remove('text-gray-500','hover:bg-warm-50');
+        accTab.classList.add('bg-warm-100','text-warm-700');
+    }
+
     await loadAccountsSettings();
 });
 
