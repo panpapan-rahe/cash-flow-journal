@@ -161,14 +161,14 @@ function renderTransactions(transactions) {
 
         return `
             <tr>
-                <td class="py-3 text-sm text-gray-600 text-left">${formatDate(tx.date)}</td>
-                <td class="py-3 text-sm text-left">${tx.category_name || '-'}</td>
-                <td class="py-3 text-sm text-left">${rekening}</td>
-                <td class="py-3 text-sm text-right text-green-600">${incomeValue}</td>
-                <td class="py-3 text-sm text-right text-red-500">${expenseValue}</td>
-                <td class="py-3 text-sm text-right text-gray-400">${adminValue}</td>
-                <td class="py-3 text-sm text-gray-500 text-left">${tx.description || '-'}</td>
-                <td class="py-3 text-sm text-right">
+                <td class="py-3 px-3 text-sm text-gray-600 text-left">${formatDate(tx.date)}</td>
+                <td class="py-3 px-3 text-sm text-left">${tx.category_name || '-'}</td>
+                <td class="py-3 px-3 text-sm text-left">${rekening}</td>
+                <td class="py-3 px-3 text-sm text-right text-green-600">${incomeValue}</td>
+                <td class="py-3 px-3 text-sm text-right text-red-500">${expenseValue}</td>
+                <td class="py-3 px-3 text-sm text-right text-gray-400">${adminValue}</td>
+                <td class="py-3 px-3 text-sm text-gray-500 text-left">${tx.description || '-'}</td>
+                <td class="py-3 px-3 text-sm text-right">
                     <button class="btn-delete-circle" onclick="deleteTransaction(${tx.id})" aria-label="Hapus transaksi" title="Hapus transaksi"></button>
                 </td>
             </tr>
