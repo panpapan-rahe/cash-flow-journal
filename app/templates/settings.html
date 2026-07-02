@@ -89,17 +89,37 @@
                         <h4 class="text-sm font-semibold text-gray-700">Daftar Kategori</h4>
                         <button id="btn-add-category" class="px-3 py-1.5 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg transition">+ Tambah</button>
                     </div>
-                    <div class="overflow-x-auto">
+
+                    <!-- Income Table -->
+                    <div class="overflow-x-auto mb-6">
+                        <h5 class="text-sm font-semibold text-gray-600 mb-2">Pemasukan</h5>
                         <table class="w-full text-sm">
                             <thead>
                                 <tr class="text-left text-gray-400 border-b border-gray-100">
-                                    <th class="pb-2 font-medium">Nama Kategori</th>
-                                    <th class="pb-2 font-medium">Tipe</th>
-                                    <th class="pb-2 font-medium"></th>
+                                    <th class="py-3 px-3 font-medium text-left">Nama Kategori</th>
+                                    <th class="py-3 px-3 font-medium">Tipe</th>
+                                    <th class="py-3 px-3 font-medium"></th>
                                 </tr>
                             </thead>
-                            <tbody id="categories-settings-body">
-                                <tr><td colspan="3" class="text-center py-4 text-gray-400">Belum ada kategori</td></tr>
+                            <tbody id="categories-income-body">
+                                <tr><td colspan="3" class="text-center py-4 text-gray-400">Belum ada kategori pemasukan</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Expense Table -->
+                    <div class="overflow-x-auto">
+                        <h5 class="text-sm font-semibold text-gray-600 mb-2">Pengeluaran</h5>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-left text-gray-400 border-b border-gray-100">
+                                    <th class="py-3 px-3 font-medium text-left">Nama Kategori</th>
+                                    <th class="py-3 px-3 font-medium">Tipe</th>
+                                    <th class="py-3 px-3 font-medium"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="categories-expense-body">
+                                <tr><td colspan="3" class="text-center py-4 text-gray-400">Belum ada kategori pengeluaran</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -134,8 +154,8 @@
                     <label class="block text-sm text-gray-500 mb-1">Saldo Awal (Rp)</label>
                     <input type="number" id="account-balance" required min="0" step="1000" placeholder="0" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
                 </div>
-<button type="submit" class="flex-1 py-2 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
-                    <button type="button" onclick="closeAccountFormModal()" class="flex-1 py-2 text-sm font-medium border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50">Batal</button>
+                <button type="submit" class="flex-1 py-2 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
+                <button type="button" onclick="closeAccountFormModal()" class="flex-1 py-2 text-sm font-medium border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50">Batal</button>
             </form>
         </div>
     </div>
@@ -145,28 +165,25 @@
         <div class="bg-white rounded-2xl p-5 w-full max-w-sm mx-4 shadow-xl">
             <h3 class="text-sm font-bold text-gray-800 mb-4" id="category-form-title">Tambah Kategori</h3>
             <form id="category-form" class="space-y-3">
-                <input type="hidden" id="category-id">
                 <div>
                     <label class="block text-sm text-gray-500 mb-1">Nama Kategori</label>
-                    <input type="text" id="category-name" required placeholder="contoh: Makanan, Gaji" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+                    <input type="text" id="category-name" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
                 </div>
                 <div>
                     <label class="block text-sm text-gray-500 mb-1">Tipe</label>
-                    <select id="category-type" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
-                        <option value="">Pilih tipe</option>
+                    <select id="category-type" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
                         <option value="income">Pemasukan</option>
                         <option value="expense">Pengeluaran</option>
                     </select>
                 </div>
                 <div class="flex gap-2 pt-2">
-                    <button type="submit" class="flex-1 py-2 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
-                    <button type="button" onclick="closeCategoryForm()" class="flex-1 py-2 text-sm font-medium border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50">Batal</button>
+                    <button type="button" onclick="closeCategoryFormModal()" class="flex-1 py-2 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="flex-1 py-2 text-sm font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script src="/static/app.js"></script>
-<!-- Settings JS removed, script logic moved to app.js -->
 </body>
 </html>

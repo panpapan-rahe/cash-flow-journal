@@ -544,26 +544,39 @@ async function loadAccountsSettings() {
 async function loadCategoriesSettings() {
     try {
         const categories = await api('/api/categories');
-        const tbody = document.getElementById('categories-settings-body');
+        const incomeBody = document.getElementById('categories-income-body');
+        const expenseBody = document.getElementById('categories-expense-body');
         
-        if (categories.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Belum ada kategori</td></tr>';
-            return;
-        }
+        const income = categories.filter(c => c.type === 'income');
+        const expense = categories.filter(c => c.type === 'expense');
 
-        tbody.innerHTML = categories.map(cat => {
-            const typeLabel = cat.type === 'income' ? 'Pemasukan' : 'Pengeluaran';
-            const typeBadge = cat.type === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700';
-            return `
+        if (income.length === 0) {
+            incomeBody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-gray-400">Belum ada kategori pemasukan</td></tr>';
+        } else {
+            incomeBody.innerHTML = income.map(cat => `
                 <tr>
-                    <td><strong>${cat.name}</strong></td>
-                    <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${typeBadge}">${typeLabel}</span></td>
-                    <td>
+                    <td class="py-3 px-3 text-sm text-left"><strong>${cat.name}</strong></td>
+                    <td class="py-3 px-3 text-sm"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Pemasukan</span></td>
+                    <td class="py-3 px-3 text-sm text-right">
                         <button class="btn btn-sm btn-danger" onclick="deleteCategory(${cat.id})">Hapus</button>
                     </td>
                 </tr>
-            `;
-        }).join('');
+            `).join('');
+        }
+
+        if (expense.length === 0) {
+            expenseBody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-gray-400">Belum ada kategori pengeluaran</td></tr>';
+        } else {
+            expenseBody.innerHTML = expense.map(cat => `
+                <tr>
+                    <td class="py-3 px-3 text-sm text-left"><strong>${cat.name}</strong></td>
+                    <td class="py-3 px-3 text-sm"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">Pengeluaran</span></td>
+                    <td class="py-3 px-3 text-sm text-right">
+                        <button class="btn btn-sm btn-danger" onclick="deleteCategory(${cat.id})">Hapus</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
     } catch (e) {
         console.warn('Failed to load categories settings', e);
     }
