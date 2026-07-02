@@ -24,17 +24,61 @@ function todayISO() {
 }
 
 async function api(path, options = {}) {
-    const res = await fetch(API_BASE + path, {
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        ...options
-    });
-    if (res.status === 401) {
-        console.log('[DEBUG] Got 401, redirecting to login');
-        window.location.href = '/login';
-        throw new Error('Unauthorized');
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    try {
+        const res = await fetch(API_BASE + path, {
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            signal: controller.signal,
+            ...options
+        });
+        if (res.status === 401) {
+            console.log('[DEBUG] Got 401, redirecting to login');
+            window.location.href = '/login';
+            throw new Error('Unauthorized');
+        }
+        const text = await res.text();
+        console.log('[API]', path, 'HTTP', res.status, res.statusText);
+        let data;
+        if (res.ok) {
+            if (text) {
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    if (text.includes('<')) {
+                        console.error('[API]', path, 'Unexpected HTML response', text.slice(0,200));
+                        throw new Error('Server error: expected JSON but got HTML');
+                    }
+                    throw new Error('Invalid JSON response');
+                }
+                console.log('[API]', path, 'response', data);
+                return data;
+            }
+            return {};
+        } else {
+            let errMsg = `HTTP ${res.status}`;
+            if (text) {
+                try {
+                    const errJson = JSON.parse(text);
+                    errMsg = errJson.error || errJson.message || errMsg;
+                } catch {
+                    if (text.includes('<')) {
+                        const titleMatch = text.match(/<title>([^<]+)<\/title>/i);
+                        if (titleMatch) errMsg = titleMatch[1];
+                    } else errMsg = text;
+                }
+            }
+            console.error('[API]', path, 'error', errMsg);
+            throw new Error(errMsg);
+        }
+    } catch (e) {
+        if (e.message.includes('[API]')) throw e;
+        console.error('[API]', path, 'error', e);
+        throw e;
+    } finally {
+        clearTimeout(timeout);
     }
-    return res.json();
 }
 
 // ─── Auth ───
@@ -311,19 +355,24 @@ if (payForm) payForm.addEventListener('submit', async (e) => {
     const payAccount = document.getElementById('pay-account');
     const payload = {
         payment_account_id: parseInt(payAccount.value),
-        amount_paid: parseFloat(document.getElementById('pay-amount').value),
+        amount: parseFloat(document.getElementById('pay-amount').value),
         admin_fee: parseFloat(document.getElementById('pay-admin').value) || 0,
         note: '',
         date: todayISO()
     };
+    const url = '/api/debts/' + debtId + '/pay';
+    
     try {
-        await api('/api/debts/' + debtId + '/pay', { method: 'POST', body: JSON.stringify(payload) });
+        const response = await api(url, { method: 'POST', body: JSON.stringify(payload) });
+        console.log('[PayDebt] success:', response);
+        
         closePayModal();
         await loadDebts();
         await loadAccountsGrid();
         updateSummaryCards();
         await updateAccountDropdowns();
     } catch (e) {
+        console.error('[PayDebt] ERROR:', e);
         alert('Gagal mencatat pembayaran: ' + e.message);
     }
 });
