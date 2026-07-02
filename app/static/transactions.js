@@ -65,10 +65,13 @@ async function updateCategoryDropdown() {
 // ─── Render Transactions ───
 function renderTransactions(transactions) {
     const tbody = document.getElementById('transactions-body');
+    if (!tbody) return;
+
     if (transactions.length === 0) {
         tbody.innerHTML = '<tr><td colspan="8" class="text-center py-5 text-gray-400">Belum ada transaksi</td></tr>';
         return;
     }
+
     tbody.innerHTML = transactions.map(tx => {
         const rekening = tx.type === 'transfer'
             ? `${tx.account_name || '?'} ↔ ${tx.to_account_name || '?'}`
@@ -78,14 +81,14 @@ function renderTransactions(transactions) {
         const adminValue = tx.admin_fee && tx.admin_fee > 0 ? formatCurrency(tx.admin_fee) : '-';
         return `
             <tr>
-                <td class="py-3 pr-3 text-sm text-gray-600">${formatDate(tx.date)}</td>
-                <td class="py-3 pr-3 text-sm">${tx.category_name || '-'}</td>
-                <td class="py-3 pr-3 text-sm">${rekening}</td>
-                <td class="py-3 pr-3 text-sm text-right text-green-600">${incomeValue}</td>
-                <td class="py-3 pr-3 text-sm text-right text-red-500">${expenseValue}</td>
-                <td class="py-3 pr-3 text-sm text-right text-gray-400">${adminValue}</td>
-                <td class="py-3 pr-3 text-sm text-gray-500">${tx.description || '—'}</td>
-                <td class="py-3 text-sm">
+                <td class="py-3 text-sm text-gray-600">${formatDate(tx.date)}</td>
+                <td class="py-3 text-sm">${tx.category_name || '-'}</td>
+                <td class="py-3 text-sm">${rekening}</td>
+                <td class="py-3 text-sm text-right text-green-600">${incomeValue}</td>
+                <td class="py-3 text-sm text-right text-red-500">${expenseValue}</td>
+                <td class="py-3 text-sm text-right text-gray-400">${adminValue}</td>
+                <td class="py-3 text-sm text-gray-500">${tx.description || '—'}</td>
+                <td class="py-3 text-sm text-right">
                     <button onclick="deleteTransaction(${tx.id})" class="text-red-400 hover:text-red-600 text-xs font-medium">Hapus</button>
                 </td>
             </tr>
