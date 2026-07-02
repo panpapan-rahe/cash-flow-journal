@@ -513,7 +513,7 @@ if (accountForm) accountForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('account-id').value;
     const name = document.getElementById('account-name').value.trim();
-    const opening_balance = parseFloat(document.getElementById('account-opening-balance').value) || 0;
+    const opening_balance = parseFloat(document.getElementById('account-balance').value) || 0;
     const payload = { name, opening_balance };
     
     try {
@@ -592,7 +592,7 @@ async function loadAccountsSettings() {
                     <td class="py-3 px-3 text-sm text-right amount-transfer">+ ${formatCurrency(transferIn)}</td>
                     <td class="py-3 px-3 text-sm text-right ${balanceClass}"><strong>${formatCurrency(balance)}</strong></td>
                     <td class="py-3 px-3 text-sm text-right">
-                        <button class="btn btn-sm btn-danger" onclick="deleteAccount(acc.id)">Hapus</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteAccount(acc.id)" type="button">Hapus</button>
                     </td>
                 </tr>
             `;
