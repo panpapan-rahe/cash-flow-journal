@@ -554,12 +554,9 @@ async function loadCategoriesSettings() {
             incomeBody.innerHTML = '<p class="col-span-full text-center py-4 text-gray-400 text-sm">Belum ada kategori pemasukan</p>';
         } else {
             incomeBody.innerHTML = income.map(cat => `
-                <div class="border border-warm-100 rounded-lg bg-warm-50 p-3">
-                    <div class="font-medium text-gray-800 mb-1">${cat.name}</div>
-                    <div class="inline-flex items-center gap-2">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Pemasukan</span>
-                        <button class="text-red-400 hover:text-red-600 text-xs font-medium" onclick="deleteCategory(${cat.id})">Hapus</button>
-                    </div>
+                <div class="border border-warm-100 rounded-lg bg-warm-50 p-3 flex items-center justify-between">
+                    <div class="font-medium text-gray-800">${cat.name}</div>
+                    <button class="text-red-400 hover:text-red-600 text-xs font-medium" onclick="deleteCategory(${cat.id})">Hapus</button>
                 </div>
             `).join('');
         }
@@ -568,12 +565,9 @@ async function loadCategoriesSettings() {
             expenseBody.innerHTML = '<p class="col-span-full text-center py-4 text-gray-400 text-sm">Belum ada kategori pengeluaran</p>';
         } else {
             expenseBody.innerHTML = expense.map(cat => `
-                <div class="border border-warm-100 rounded-lg bg-warm-50 p-3">
-                    <div class="font-medium text-gray-800 mb-1">${cat.name}</div>
-                    <div class="inline-flex items-center gap-2">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">Pengeluaran</span>
-                        <button class="text-red-400 hover:text-red-600 text-xs font-medium" onclick="deleteCategory(${cat.id})">Hapus</button>
-                    </div>
+                <div class="border border-warm-100 rounded-lg bg-warm-50 p-3 flex items-center justify-between">
+                    <div class="font-medium text-gray-800">${cat.name}</div>
+                    <button class="text-red-400 hover:text-red-600 text-xs font-medium" onclick="deleteCategory(${cat.id})">Hapus</button>
                 </div>
             `).join('');
         }
