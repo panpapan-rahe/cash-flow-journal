@@ -551,30 +551,30 @@ async function loadCategoriesSettings() {
         const expense = categories.filter(c => c.type === 'expense');
 
         if (income.length === 0) {
-            incomeBody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-gray-400">Belum ada kategori pemasukan</td></tr>';
+            incomeBody.innerHTML = '<p class="col-span-full text-center py-4 text-gray-400 text-sm">Belum ada kategori pemasukan</p>';
         } else {
             incomeBody.innerHTML = income.map(cat => `
-                <tr>
-                    <td class="py-3 px-3 text-sm text-left"><strong>${cat.name}</strong></td>
-                    <td class="py-3 px-3 text-sm"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Pemasukan</span></td>
-                    <td class="py-3 px-3 text-sm text-right">
-                        <button class="btn btn-sm btn-danger" onclick="deleteCategory(${cat.id})">Hapus</button>
-                    </td>
-                </tr>
+                <div class="border border-warm-100 rounded-lg bg-warm-50 p-3">
+                    <div class="font-medium text-gray-800 mb-1">${cat.name}</div>
+                    <div class="inline-flex items-center gap-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Pemasukan</span>
+                        <button class="text-red-400 hover:text-red-600 text-xs font-medium" onclick="deleteCategory(${cat.id})">Hapus</button>
+                    </div>
+                </div>
             `).join('');
         }
 
         if (expense.length === 0) {
-            expenseBody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-gray-400">Belum ada kategori pengeluaran</td></tr>';
+            expenseBody.innerHTML = '<p class="col-span-full text-center py-4 text-gray-400 text-sm">Belum ada kategori pengeluaran</p>';
         } else {
             expenseBody.innerHTML = expense.map(cat => `
-                <tr>
-                    <td class="py-3 px-3 text-sm text-left"><strong>${cat.name}</strong></td>
-                    <td class="py-3 px-3 text-sm"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">Pengeluaran</span></td>
-                    <td class="py-3 px-3 text-sm text-right">
-                        <button class="btn btn-sm btn-danger" onclick="deleteCategory(${cat.id})">Hapus</button>
-                    </td>
-                </tr>
+                <div class="border border-warm-100 rounded-lg bg-warm-50 p-3">
+                    <div class="font-medium text-gray-800 mb-1">${cat.name}</div>
+                    <div class="inline-flex items-center gap-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">Pengeluaran</span>
+                        <button class="text-red-400 hover:text-red-600 text-xs font-medium" onclick="deleteCategory(${cat.id})">Hapus</button>
+                    </div>
+                </div>
             `).join('');
         }
     } catch (e) {

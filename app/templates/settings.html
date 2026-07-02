@@ -90,38 +90,20 @@
                         <button id="btn-add-category" class="px-3 py-1.5 text-sm font-medium bg-warm-500 hover:bg-warm-600 text-white rounded-lg transition">+ Tambah</button>
                     </div>
 
-                    <!-- Income Table -->
-                    <div class="overflow-x-auto mb-6">
+                    <!-- Income Grid -->
+                    <div class="mb-6">
                         <h5 class="text-sm font-semibold text-gray-600 mb-2">Pemasukan</h5>
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="text-left text-gray-400 border-b border-gray-100">
-                                    <th class="py-3 px-3 font-medium text-left">Nama Kategori</th>
-                                    <th class="py-3 px-3 font-medium">Tipe</th>
-                                    <th class="py-3 px-3 font-medium"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="categories-income-body">
-                                <tr><td colspan="3" class="text-center py-4 text-gray-400">Belum ada kategori pemasukan</td></tr>
-                            </tbody>
-                        </table>
+                        <div id="categories-income-body" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                             <p class="col-span-full text-center py-4 text-gray-400 text-sm">Belum ada kategori pemasukan</p>
+                        </div>
                     </div>
 
-                    <!-- Expense Table -->
-                    <div class="overflow-x-auto">
+                    <!-- Expense Grid -->
+                    <div>
                         <h5 class="text-sm font-semibold text-gray-600 mb-2">Pengeluaran</h5>
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="text-left text-gray-400 border-b border-gray-100">
-                                    <th class="py-3 px-3 font-medium text-left">Nama Kategori</th>
-                                    <th class="py-3 px-3 font-medium">Tipe</th>
-                                    <th class="py-3 px-3 font-medium"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="categories-expense-body">
-                                <tr><td colspan="3" class="text-center py-4 text-gray-400">Belum ada kategori pengeluaran</td></tr>
-                            </tbody>
-                        </table>
+                        <div id="categories-expense-body" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                             <p class="col-span-full text-center py-4 text-gray-400 text-sm">Belum ada kategori pengeluaran</p>
+                        </div>
                     </div>
                 </div>
             </div>
