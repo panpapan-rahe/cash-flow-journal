@@ -930,6 +930,7 @@ function updateSummaryCards() {
     const debtEl = document.getElementById('sum-debt');
     if (debtEl && typeof allDebts !== 'undefined' && Array.isArray(allDebts)) {
         const totalDebt = allDebts.reduce((sum, d) => {
+            if (d.status === 'paid') return sum;
             const paid = parseFloat(d.total_paid) || 0;
             const total = parseFloat(d.amount_total) || 0;
             return sum + (total - paid);
