@@ -353,9 +353,20 @@ if (payForm) payForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const debtId = document.getElementById('pay-debt-id').value;
     const payAccount = document.getElementById('pay-account');
+    const amountPaid = parseFloat(document.getElementById('pay-amount').value);
+    
+    // Add logic to check remaining amount
+    if (currentPayDebt) {
+        const remaining = currentPayDebt.amount_total - (currentPayDebt.total_paid || 0);
+        if (amountPaid > remaining) {
+            alert(`Peringatan: Jumlah bayar (${formatCurrency(amountPaid)}) melebihi sisa hutang (${formatCurrency(remaining)}).`);
+            return;
+        }
+    }
+
     const payload = {
         payment_account_id: parseInt(payAccount.value),
-        amount: parseFloat(document.getElementById('pay-amount').value),
+        amount: amountPaid,
         admin_fee: parseFloat(document.getElementById('pay-admin').value) || 0,
         note: '',
         date: todayISO()
