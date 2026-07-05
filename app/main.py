@@ -78,7 +78,7 @@ def login():
             else:
                 flash("Username atau password salah.", "error")
 
-    return render_template("login.html", user_count=get_user_count())
+    return render_template("auth/login.html", user_count=get_user_count())
 
 @app.route("/logout")
 def logout():
@@ -112,19 +112,19 @@ def dashboard():
     db = get_db(g.user["id"])
     row = db.execute("SELECT COUNT(*) AS cnt FROM accounts").fetchone()
     needs_setup = (row["cnt"] == 0)
-    return render_template("index.html", username=g.user["username"], needs_setup=needs_setup)
+    return render_template("dashboard/dashboard.html", username=g.user["username"], needs_setup=needs_setup)
 
 @app.route("/transactions")
 def transactions():
     if not g.user:
         return redirect(url_for("login"))
-    return render_template("transactions.html", username=g.user["username"])
+    return render_template("transactions/transactions.html", username=g.user["username"])
 
 @app.route("/settings")
 def settings():
     if not g.user:
         return redirect(url_for("login"))
-    return render_template("settings.html", username=g.user["username"])
+    return render_template("tools/settings.html", username=g.user["username"])
 
 # ─── API: Transactions ──────────────────────────────────────────
 @app.route("/api/transactions", methods=["GET"])
