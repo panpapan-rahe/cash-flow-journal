@@ -8,5 +8,5 @@ services:
       - "9102:8000"
     volumes:
       - ./app:/app/app
-      - ./data:/app/data
+      - /home/rahee/Web-Projects/cashflow-data/prod:/app/data
     restart: unless-stopped

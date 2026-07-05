@@ -10,5 +10,5 @@ services:
       - CASHFLOW_DATA_DIR=/app/data
     volumes:
       - ./app:/app/app
-      - ./data-staging:/app/data
+      - /home/rahee/Web-Projects/cashflow-data/staging:/app/data
     restart: unless-stopped
