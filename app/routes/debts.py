@@ -1,6 +1,7 @@
 from datetime import date
 from flask import Blueprint, request, jsonify, g
 from app.db import get_db
+from app.services.debt_service import refresh_debt_state
 
 debts_bp = Blueprint('debts', __name__)
 

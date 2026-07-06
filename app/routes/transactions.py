@@ -1,27 +1,9 @@
-from datetime import date
 from flask import Blueprint, request, jsonify, g
 from app.db import get_db
+from app.services.debt_service import refresh_debt_state
+from app.services.transaction_service import create_transaction
 
 transactions_bp = Blueprint('transactions', __name__)
-
-def refresh_debt_state(db, debt_id):
-    row = db.execute("""
-        SELECT d.amount_total, COALESCE(SUM(dp.amount), 0) as total_paid
-        FROM debts d
-        LEFT JOIN debt_payments dp ON d.id = dp.debt_id
-        WHERE d.id = ?
-        GROUP BY d.id
-    """, (debt_id,)).fetchone()
-
-    if not row:
-        return
-
-    total_paid = row['total_paid'] or 0
-    amount_total = row['amount_total'] or 0
-    if total_paid >= amount_total:
-        db.execute("UPDATE debts SET status = 'paid', amount_paid = ? WHERE id = ?", (total_paid, debt_id))
-    else:
-        db.execute("UPDATE debts SET status = 'active', amount_paid = ? WHERE id = ?", (total_paid, debt_id))
 
 @transactions_bp.route("/api/transactions", methods=["GET"])
 def get_transactions():
@@ -46,67 +28,7 @@ def add_transaction():
         return jsonify({"error": "Unauthorized"}), 401
     data = request.get_json()
     db = get_db(g.user["id"])
-    
-    # Auto-create category if new
-    cat_name = data.get("category", "").strip()
-    cat_type = data.get("type", "expense")
-    cat_id = None
-    if cat_name:
-        existing = db.execute("SELECT id FROM categories WHERE name = ? AND type = ?", (cat_name, cat_type)).fetchone()
-        if existing:
-            cat_id = existing["id"]
-        else:
-            cur = db.execute("INSERT INTO categories (name, type) VALUES (?, ?)", (cat_name, cat_type))
-            cat_id = cur.lastrowid
-
-    # Resolve account (accept ID or name)
-    acc_input = data.get("account_id") or data.get("account")
-    acc_id = None
-    if acc_input:
-        try:
-            acc_int = int(acc_input)
-            row = db.execute("SELECT id FROM accounts WHERE id = ?", (acc_int,)).fetchone()
-            acc_id = row["id"] if row else None
-        except (ValueError, TypeError):
-            row = db.execute("SELECT id FROM accounts WHERE name = ?", (str(acc_input),)).fetchone()
-            if row:
-                acc_id = row["id"]
-            else:
-                cur = db.execute("INSERT INTO accounts (name) VALUES (?)", (str(acc_input),))
-                acc_id = cur.lastrowid
-    else:
-        first = db.execute("SELECT id FROM accounts LIMIT 1").fetchone()
-        acc_id = first["id"] if first else None
-
-    to_acc_id = None
-    if data.get("type") == "transfer":
-        to_input = data.get("to_account_id") or data.get("to_account", "Lainnya")
-        if isinstance(to_input, (int, float)):
-            row = db.execute("SELECT id FROM accounts WHERE id = ?", (to_input,)).fetchone()
-            to_acc_id = row["id"] if row else None
-        else:
-            row = db.execute("SELECT id FROM accounts WHERE name = ?", (str(to_input),)).fetchone()
-            if row:
-                to_acc_id = row["id"]
-            else:
-                cur = db.execute("INSERT INTO accounts (name) VALUES (?)", (str(to_input),))
-                to_acc_id = cur.lastrowid
-
-    admin_fee = float(data.get("admin_fee") or 0)
-    
-    if data.get("type") == "transfer":
-        # Mutasi: simpan 1 record transfer tunggal
-        db.execute("""
-            INSERT INTO transactions (category_id, account_id, to_account_id, type, amount, admin_fee, description, date)
-            VALUES (?, ?, ?, 'transfer', ?, ?, ?, ?)
-        """, (cat_id, acc_id, to_acc_id, data["amount"], admin_fee, data.get("description", ""), data.get("date") or date.today().isoformat()))
-    else:
-        # Pengeluaran / Pemasukan biasa (amount = nominal murni, admin_fee terpisah)
-        db.execute("""
-            INSERT INTO transactions (category_id, account_id, to_account_id, type, amount, admin_fee, description, date)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (cat_id, acc_id, to_acc_id, data["type"], data["amount"], admin_fee, data.get("description", ""), data.get("date") or date.today().isoformat()))
-    db.commit()
+    create_transaction(db, data)
     return jsonify({"ok": True})
 
 @transactions_bp.route("/api/transactions/<int:tx_id>", methods=["DELETE"])
