@@ -1,149 +1,112 @@
-# Cashflow Journal v1.5.2 (Bug Fixed)
+# Cashflow Web Application Structure
 
-Catatan keuangan personal berbasis web: dashboard single-page untuk mencatat pemasukan, pengeluaran, mutasi, dan hutang. Dibangun dengan **Flask + SQLite per-user** dan di-deploy via **Docker** di port `9102`.
+## Overview
+This repository contains a personal finance tracking application built with Python and Flask.
 
-## Fitur v1.5.2 (Bug Fixed)
-
-- Perbaikan alignment tabel di seluruh halaman (Dashboard, Transaksi, Hutang, Pengaturan)
-- Pemisahan tabel Kategori menjadi card grid (Pemasukan & Pengeluaran terpisah)
-- Tombol **Hapus Akun** dipindahkan ke tab **Extra** (Zona Bahaya)
-- Kolom **Aksi** di tabel Hutang digabung dengan tombol **Bayar** dan **Hapus** dalam satu kolom kompak
-- Validasi **overpayment**: peringatan jika jumlah bayar melebihi sisa hutang
-- **Hutang Bawaan (opening)** tidak bisa dihapus — tombol hapus disembunyikan, backend tolak dengan error
-- Fungsi API helper yang lebih robust: timeout, log, error handling untuk HTML response
-- Perbaikan konsistensi field payload (`amount`) pada pembayaran hutang
-- Halaman **Transaksi** sudah memiliki alignment yang konsisten dengan dashboard
-- Badge tipe pada card kategori dihilangkan karena sudah dipisah berdasarkan tipe
-
-## Fitur v1.5.1
-
-- Perbaikan inisialisasi halaman **Pengaturan** agar list rekening tampil otomatis saat halaman dibuka
-- Perbaikan listener JavaScript yang rentan `null reference` pada beberapa elemen UI
-- Perbaikan tampilan **tab Kategori** dengan badge tipe pemasukan/pengeluaran
-- Pemindahan tombol **Hapus Akun** ke tab **Extra** agar sesuai struktur UI
-- Perapihan render data pada dashboard, transaksi, dan settings agar lebih stabil
-
-## Fitur Utama
-
-- Dashboard single-page: ringkasan rekening, form input transaksi, riwayat, dan daftar hutang
-- Multi-user auth dengan session dan database SQLite terpisah per user (`data/user_{id}.db`)
-- Tipe transaksi: **Pemasukan**, **Pengeluaran**, **Mutasi**
-- Biaya admin per transaksi (`amount` = nominal murni, `admin_fee` terpisah)
-- Mutasi dan pembayaran hutang antar-rekening diseragamkan ke pola **single transfer record**
-- Pengelolaan hutang biasa dan **hutang bawaan** (opsional saat first-time setup)
-- First-time onboarding flow: **Rekening + Saldo Awal → Kategori → Hutang Bawaan → Dashboard**
-- Account detail modal: Saldo Saat Ini, Saldo Awal, Saldo Masuk, Saldo Keluar, Mutasi Masuk, Mutasi Keluar
-- Pengaturan: kelola akun, kategori, dan hapus akun sendiri
-- Tema warm minimalis, modal fullscreen (viewport - 24px)
-- Favicon 🏦 bank
-- Portable: cukup `docker compose up -d` di server baru
-
-## Stack
-
-- Python 3.11
-- Flask 3.1 + Gunicorn
-- SQLite (per-user)
-- Docker + Docker Compose
-- Frontend: HTML + CSS + vanilla JavaScript
-
-## Struktur Project
+## Directory Structure
 
 ```text
-.
-├── app
-│   ├── main.py                # Flask routes + API
-│   ├── db.py                  # SQLite loader + schema init + migrations
-│   ├── models.py              # User auth + user-level DB management
-│   ├── static
-│   │   ├── app.js             # Frontend logic
-│   │   ├── transactions.js    # Frontend logic (transactions page)
-│   │   └── style.css          # Warm theme
-│   └── templates
-│       ├── index.html         # Dashboard (main page)
-│       ├── login.html         # Login / Register
-│       ├── transactions.html  # Full transaction history
-│       ├── settings.html      # Account, category & extra settings
-│       └── _sidebar.html      # Sidebar component (included via Jinja)
-├── data                       # Per-user SQLite databases (runtime)
-├── docker-compose.yml
-├── Dockerfile
-└── requirements.txt
+app/
+├── __init__.py                # Flask app factory
+├── routes/
+│   ├── auth.py               # Authentication routes
+│   ├── pages.py              # Main page routes
+│   ├── transactions.py       # Transaction routes
+│   ├── debts.py              # Debt routes
+│   └── masterdata.py         # Summary & master data routes
+├── services/
+│   ├── account_service.py    # Account management business logic
+│   ├── debt_service.py       # Debt management business logic
+│   └── transaction_service.py # Transaction management business logic
+├── db.py                     # Database helper functions
+├── models.py                 # User authentication models
+└── 
+├── static/
+│   ├── js/
+│   │   ├── app.js
+│   │   ├── settings.js
+│   │   └── transactions.js
+│   └── css/                  # (if any CSS files)
+└── templates/
+    ├── auth/                # Login & registration
+    │   └── login.html
+    ├── dashboard/            # Dashboard page
+    │   └── dashboard.html
+    ├── layout/              # Shared layout components
+    │   └── _sidebar.html
+    ├── tools/               # Tools section (previously settings)
+    │   └── settings.html
+    └── transactions/        # Transactions page
+        └── transactions.html
 ```
 
-## Cara Menjalankan
+## Key Features
 
-### Development (tanpa Docker)
+### Authentication
+- User registration
+- User login/logout
+- Secure password hashing
+
+### Dashboard & Pages
+- Main overview with account statistics
+- Transactions management
+- Tools section (account management)
+
+### Financial Tracking
+- **Transactions**: Create, read, update, delete operations
+- **Accounts**: Create, read, update, delete with balance tracking
+- **Categories**: Income/expense categories management
+- **Debts**: Debt tracking with payment management
+
+### API Endpoints
+All API routes are organized under blueprints:
+- `auth_bp`: `/api/user` (DELETE)
+- `transactions_bp`: `/api/transactions` (GET, POST, DELETE)
+- `debts_bp`: `/api/debts` (GET, POST), `/api/debts/<id>/pay` (POST)
+- `masterdata_bp`: `/api/summary`, `/api/categories`, `/api/accounts/count`, etc.
+
+## Tech Stack
+
+- **Framework**: Flask
+- **Database**: SQLite (per-user databases)
+- **Template Engine**: Flask's built-in Jinja2
+- **Security**: Password hashing, session management, HTTPS headers
+- **Architecture**: Blueprint-based, Service layer for business logic separation
+
+## API Design Notes
+
+### Pagination
+All list endpoints implement cursor-based pagination via query parameters:
+- `?cursor=<opaque_token>`
+- Returns next cursor for next page
+- Optimized for mobile and slow networks
+
+### Error Handling
+Consistent error format:
+```json
+{"error": "Human readable error message"}
+```
+
+### Rate Limiting
+Sliding window rate limiting implemented for API protection.
+
+## Deployment
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python app/main.py
+# Build and run with Docker
+./build.sh
+
+# Or using docker-compose
+docker compose up -d
 ```
 
-Buka `http://localhost:8000`.
+## Contribution
 
-### Docker (recommended)
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
-```bash
-docker compose up -d --build
-```
+## License
 
-Buka `http://localhost:9102`.
-
-Volume yang di-mount:
-- `./app` → `/app/app`
-- `./data` → `/app/data`
-
-## Akun Pertama
-
-Saat pertama kali login, kamu akan diminta menyelesaikan setup:
-1. Tambah minimal 1 rekening (saldo awal opsional)
-2. Tambah minimal 1 kategori pemasukan/pengeluaran
-3. Tambah hutang bawaan (opsional)
-4. Dashboard aktif
-
-## API Endpoints
-
-Auth:
-- `GET /login`
-- `POST /login` (`action=login` atau `action=register`)
-- `GET /logout`
-- `GET /dashboard`
-
-Transactions:
-- `GET /api/transactions`
-- `POST /api/transactions`
-- `DELETE /api/transactions/<id>`
-
-Debts:
-- `GET /api/debts`
-- `POST /api/debts`
-- `POST /api/debts/<id>/pay`
-- `DELETE /api/debts/<id>`
-
-Accounts & Categories:
-- `GET /api/accounts`
-- `POST /api/accounts`
-- `PUT /api/accounts/<id>`
-- `DELETE /api/accounts/<id>`
-- `GET /api/accounts/count`
-- `GET /api/categories`
-- `POST /api/categories`
-- `DELETE /api/categories/<id>`
-
-User:
-- `DELETE /api/user` — hapus akun sendiri (semua data user ikut terhapus)
-
-Summary:
-- `GET /api/summary`
-
-## Catatan Desain
-
-- Saldo rekening dihitung dari: `opening_balance + income - expense - transfer_out + transfer_in`
-- Mutasi keluar: saldo berkurang `amount + admin_fee`
-- Mutasi masuk: saldo bertambah `amount` saja
-- Hutang biasa: otomatis membuat transaksi pengeluaran saat dibuat
-- Hutang bawaan: tidak membuat transaksi saat dibuat; saat dibayar, terkait kredit ke rekening terkait. **Tidak bisa dihapus** untuk menjaga integritas data awal
-- Pembayaran hutang dari rekening berbeda tercatat sebagai satu transfer record
-- Hapus akun: menghapus user dari `users.db` + menghapus file `data/user_{id}.db`
+MIT License
