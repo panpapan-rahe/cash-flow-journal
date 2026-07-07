@@ -46,6 +46,7 @@ def delete_transaction(tx_id):
         if payment_row:
             debt_id = payment_row["debt_id"]
             db.execute("DELETE FROM debt_payments WHERE id = ?", (payment_row["id"],))
+            from app.services.debt_service import refresh_debt_state
             refresh_debt_state(db, debt_id)
 
     db.execute("DELETE FROM transactions WHERE id = ?", (tx_id,))
