@@ -742,23 +742,27 @@ window.showForcedSetupModal = showForcedSetupModal;
 // Sheet 1: Accounts
 const btnAddForcedAccount = document.getElementById('btn-add-forced-account');
 if (btnAddForcedAccount) btnAddForcedAccount.addEventListener('click', () => {
-    const name = document.getElementById('forced-account-name').value.trim() || 'Rekening';
+    const name = document.getElementById('forced-account-name').value.trim();
     const opening = parseFloat(document.getElementById('forced-account-opening').value) || 0;
-    if (name && name.trim()) {
-        forcedAccountSeq += 1;
-        forcedAccounts.push({ tempId: `fa-${forcedAccountSeq}`, name: name.trim(), opening_balance: opening });
-        document.getElementById('forced-account-name').value = '';
-        document.getElementById('forced-account-opening').value = '';
-        renderForcedAccounts();
-        renderForcedOpeningDebtAccountOptions();
+    if (!name) {
+        showForcedNotice('Nama rekening wajib diisi.');
+        return;
     }
+    forcedAccountSeq += 1;
+    forcedAccounts.push({ tempId: `fa-${forcedAccountSeq}`, name: name, opening_balance: opening });
+    document.getElementById('forced-account-name').value = '';
+    document.getElementById('forced-account-opening').value = '';
+    renderForcedAccounts();
+    renderForcedOpeningDebtAccountOptions();
 });
 
 function renderForcedAccounts() {
     const container = document.getElementById('forced-accounts-list');
     if (forcedAccounts.length === 0) {
         container.innerHTML = '';
+        container.style.display = 'none';
     } else {
+        container.style.display = 'block';
         container.innerHTML = forcedAccounts.map((acc, i) => `
             <div class="flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
                 <div class="min-w-0">
@@ -788,6 +792,7 @@ if (btnForcedNext) btnForcedNext.addEventListener('click', () => {
     }
     document.getElementById('forced-sheet-1').style.display = 'none';
     document.getElementById('forced-sheet-2').style.display = 'block';
+    setForcedSetupStep(2);
 });
 
 // Sheet 2: Categories
@@ -796,7 +801,7 @@ if (btnAddForcedCategory) btnAddForcedCategory.addEventListener('click', () => {
     const name = document.getElementById('forced-category-name').value.trim();
     const type = document.querySelector('input[name="forced-cat-type"]:checked').value;
     if (!name) {
-        alert('Nama kategori wajib diisi.');
+        showForcedNotice('Nama kategori wajib diisi.');
         return;
     }
     forcedCategories.push({ name, type });
@@ -806,18 +811,20 @@ if (btnAddForcedCategory) btnAddForcedCategory.addEventListener('click', () => {
 
 function renderForcedCategories() {
     const container = document.getElementById('forced-categories-list');
+    if (!container) return;
     if (forcedCategories.length === 0) {
-        container.innerHTML = '<p class="empty-state">Belum ada kategori ditambahkan</p>';
+        container.innerHTML = '';
     } else {
         container.innerHTML = forcedCategories.map((cat, i) => {
             const typeLabel = cat.type === 'income' ? 'Pemasukan' : 'Pengeluaran';
             const typeBadge = cat.type === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700';
             return `
-                <div class="forced-item">
-                    <span>${cat.name} <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${typeBadge}">${typeLabel}</span></span>
-                    <div class="item-actions">
-                        <button class="btn btn-sm btn-danger" onclick="removeForcedCategory(${i})">Hapus</button>
+                <div class="flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
+                    <div class="min-w-0">
+                        <div class="truncate text-sm font-semibold text-gray-800">${cat.name}</div>
+                        <div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${typeBadge}">${typeLabel}</div>
                     </div>
+                    <button class="shrink-0 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-100" onclick="removeForcedCategory(${i})">Hapus</button>
                 </div>
             `;
         }).join('');
@@ -860,11 +867,12 @@ function renderForcedOpeningDebtAccountOptions() {
 const btnForcedNextDebt = document.getElementById('btn-forced-next-debt');
 if (btnForcedNextDebt) btnForcedNextDebt.addEventListener('click', () => {
     if (forcedCategories.length === 0) {
-        alert('Minimal tambah 1 kategori terlebih dahulu.');
+        showForcedNotice('Pastikan minimal 1 kategori sudah ditambahkan.');
         return;
     }
     document.getElementById('forced-sheet-2').style.display = 'none';
     document.getElementById('forced-sheet-3').style.display = 'block';
+    setForcedSetupStep(3);
     refreshOpeningDebtAccountSelect();
     renderForcedOpeningDebts();
 });
@@ -917,6 +925,7 @@ const btnForcedBackDebt = document.getElementById('btn-forced-back-debt');
 if (btnForcedBackDebt) btnForcedBackDebt.addEventListener('click', () => {
     document.getElementById('forced-sheet-3').style.display = 'none';
     document.getElementById('forced-sheet-2').style.display = 'block';
+    setForcedSetupStep(2);
 });
 
 const btnForcedSelesai = document.getElementById('btn-forced-selesai');
