@@ -34,7 +34,7 @@
 </head>
 <body class="bg-cream font-sans text-gray-800 h-screen overflow-hidden">
     <div class="flex h-screen">
-        {% include '_sidebar.html' %}
+        {% include 'layout/_sidebar.html' %}
 
         <!-- Main -->
         <main class="flex-1 overflow-y-auto scroll-thin p-5 lg:p-7 bg-cream">
@@ -45,10 +45,24 @@
 
             <!-- Settings nav tabs -->
             <div class="flex gap-2 mb-6">
-                <button class="settings-tab px-4 py-2 text-sm font-medium rounded-lg bg-warm-100 text-warm-700" data-tab="accounts">Rekening</button>
-                <button class="settings-tab px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:bg-warm-50" data-tab="categories">Kategori</button>
-                <button class="settings-tab px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:bg-warm-50" data-tab="extra">Extra</button>
+                <button type="button" class="settings-tab px-4 py-2 text-sm font-medium rounded-lg bg-warm-100 text-warm-700" data-tab="accounts" onclick="showSettingsTab('accounts')">Rekening</button>
+                <button type="button" class="settings-tab px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:bg-warm-50" data-tab="categories" onclick="showSettingsTab('categories')">Kategori</button>
+                <button type="button" class="settings-tab px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:bg-warm-50" data-tab="extra" onclick="showSettingsTab('extra')">Extra</button>
             </div>
+            <script>
+                window.showSettingsTab = function(tabName) {
+                    document.querySelectorAll('.settings-tab').forEach(n => n.classList.remove('bg-warm-100','text-warm-700'));
+                    document.querySelectorAll('.settings-tab').forEach(n => n.classList.add('text-gray-500','hover:bg-warm-50'));
+                    document.querySelectorAll('.settings-content').forEach(p => p.style.display = 'none');
+                    const btn = document.querySelector('.settings-tab[data-tab="' + tabName + '"]');
+                    if (btn) {
+                        btn.classList.remove('text-gray-500','hover:bg-warm-50');
+                        btn.classList.add('bg-warm-100','text-warm-700');
+                    }
+                    const panel = document.getElementById('content-' + tabName);
+                    if (panel) panel.style.display = 'block';
+                };
+            </script>
 
             <!-- Accounts panel -->
             <div class="settings-content" id="content-accounts">
@@ -163,6 +177,6 @@
         </div>
     </div>
 
-    <script src="/static/app.js"></script>
+    <script src="/static/js/app.js"></script>
 </body>
 </html>

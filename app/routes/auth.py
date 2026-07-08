@@ -21,6 +21,7 @@ def login():
                 user_id = create_user(username, password)
                 session['user_id'] = user_id
                 session['username'] = username
+                session['user_code'] = f'{user_id:04d}_{username}' if user_id else None
                 flash('Akun berhasil dibuat!', 'success')
                 return redirect(url_for('pages.dashboard'))
         else:
@@ -28,6 +29,7 @@ def login():
             if user:
                 session['user_id'] = user['id']
                 session['username'] = user['username']
+                session['user_code'] = user.get('user_code')
                 return redirect(url_for('pages.dashboard'))
             flash('Username atau password salah.', 'error')
 

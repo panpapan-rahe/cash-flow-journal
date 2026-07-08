@@ -3,85 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Kas Keuangan</title>
-    <script src="static/js/app.js" defer></script>
-    <script src="static/js/transactions.js" defer></script>
-    <script src="static/js/settings.js" defer></script>
+    <title>Cashflow - Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='72' font-size='72' text-anchor='middle'%3E%F0%9F%92%B0%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        warm: {
+                            50: '#fffbf5',
+                            100: '#fff3e0',
+                            200: '#ffe0b2',
+                            300: '#ffcc80',
+                            400: '#ffa726',
+                            500: '#ff9800',
+                            600: '#f57c00',
+                            700: '#e65100',
+                        },
+                        cream: '#fffbf5',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
     <style>
-        /* Utamakan state komponen dan pile up di left (mencegah bouncy) */
-        * { box-sizing: border-box; }
-        body { margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f9fafb; color: #111827; }
-        @media (prefers-color-scheme: dark) { body { background: #111827; color: #f3f4f6; } }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .header { background: white; padding: 20px 24px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        @media (prefers-color-scheme: dark) { .header { background: #1f2937; } }
-        h1 { margin: 0; font-size: 24px; color: #111827; }
-        @media (prefers-color-scheme: dark) { h1 { color: #f3f4f6; } }
-        .subtitle { margin: 8px 0 0 0; color: #6b7280; font-size: 14px; }
-        @media (prefers-color-scheme: dark) { .subtitle { color: #9ca3af; } }
-        .grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (min-width: 768px) { .grid { grid-template-columns: 2fr 1fr; } }
-        .main { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; }
-        @media (prefers-color-scheme: dark) { .main { background: #1f2937; } }
-        .sidebar { background: #f3f4f6; border-radius: 12px; padding: 20px; }
-        @media (prefers-color-scheme: dark) { .sidebar { background: #374151; } }
-        .module { margin-bottom: 24px; }
-        .module h3 { margin: 0 0 12px 0; font-size: 18px; }
-        .module p { margin: 0 0 8px 0; line-height: 1.5; }
-        .highlight { font-weight: 600; color: #2563eb; }
-        @media (prefers-color-scheme: dark) { .highlight { color: #60a5fa; } }
-        .btn { display: inline-block; padding: 8px 16px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; cursor: pointer; }
-        @media (prefers-color-scheme: dark) { .btn { background: #3b82f6; } }
-        .btn:hover { background: #1d4ed8; }
-        .nav a { display: block; padding: 8px 12px; text-decoration: none; color: #374151; border-radius: 4px; margin-bottom: 4px; }
-        @media (prefers-color-scheme: dark) { .nav a { color: #d1d5db; } }
-        .nav a:hover { background: #e5e7eb; }
-        @media (prefers-color-scheme: dark) { .nav a:hover { background: #4b5563; } }
-        .nav a.active { font-weight: 600; background: #dbeafe; }
-        @media (prefers-color-scheme: dark) { .nav a.active { background: #1e40af; } }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; margin-right: 12px; vertical-align: middle; }
-        .user-info { display: flex; align-items: center; margin-bottom: 20px; }
-        .user-name { font-weight: 600; }
-        input, select { padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; }
+        .scroll-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+        .scroll-thin::-webkit-scrollbar-thumb { background: #ffe0b2; border-radius: 3px; }
+        .nav-item { transition: background-color 0.15s, color 0.15s; }
+        .modal-overlay { animation: fadeIn 0.15s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .btn-circle { width: 32px; height: 32px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; }
+        .btn-circle-success { background: #dcfce7; color: #16a34a; }
+        .btn-circle-success:hover { background: #bbf7d0; }
+        .btn-circle-danger { background: #fee2e2; color: #dc2626; }
+        .btn-circle-danger:hover { background: #fecaca; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Dashboard Kas Keuangan</h1>
-            <p class="subtitle">Selamat datang, {{ username }}</p>
-        </div>
+<body class="bg-cream font-sans text-gray-800">
 
-        <div class="grid">
-            <div class="main">
-                <h2>Ringkasan Utama</h2>
-                <p id="msg">Selamat datang di dashboard Kas Keuangan pribadi Anda.</p>
-                % if needs_setup:
-                    <p>Silakan buat akun pertama, rekening pertama, atau kategori pertama.</p>
-                    <a class="btn" href="/tools/settings">Mulai Pengaturan</a>
-                % else:
-                    <p>Kas keuangan Anda dalam kondisi baik. Ada $100 yang siap dibelanjakan.</p>
-                % endif
+<!-- ═══ Layout ── -->
+<div class="flex h-screen overflow-hidden">
+
+    {% include 'layout/_sidebar.html' %}
+
+    <!-- ── Main Content ── -->
+    <main class="flex-1 overflow-y-auto scroll-thin p-5 lg:p-7 bg-cream">
+        <!-- Top bar -->
+        <header class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-lg font-bold text-gray-800">Dashboard</h2>
+                <p class="text-xs text-gray-400">Ringkasan keuanganmu</p>
             </div>
+        </header>
 
-            <div class="sidebar">
-                <div class="nav">
-                    {% include 'layout/_sidebar.html' %}
+        <!-- Summary Cards -->
+        <section class="grid grid-cols-2 gap-4 mb-6">
+            <div class="bg-white rounded-xl p-5 border border-warm-100">
+                <p class="text-xs text-gray-400 font-medium uppercase tracking-wide">Total Kepemilikan Saldo</p>
+                <p class="text-lg font-bold text-gray-800 mt-1" id="sum-balance">Rp 0</p>
+            </div>
+            <div class="bg-white rounded-xl p-5 border border-warm-100">
+                <p class="text-xs text-gray-400 font-medium uppercase tracking-wide">Hutang Aktif</p>
+                <div class="mt-2">
+                    <div class="flex justify-between text-sm font-bold text-warm-600 mb-1">
+                        <span id="sum-debt">Rp 0</span>
+                        <span class="text-gray-400" id="debt-ratio">0/0</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2">
+                        <div id="debt-progress" class="bg-warm-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5 Last Transactions Preview -->
+        <section class="mb-6">
+            <div class="bg-white rounded-xl p-5 border border-warm-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-base font-semibold text-gray-700">5 Transaksi Terakhir</h3>
+                    <a href="/transactions" class="text-xs text-warm-500 hover:text-warm-700 font-medium">Lihat semua →</a>
+                </div>
+                <div class="overflow-x-auto scroll-thin">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-left text-gray-400 border-b border-gray-100">
+                                <th class="py-3 px-3 font-medium text-left">Tanggal</th>
+                                <th class="py-3 px-3 font-medium text-left">Kategori</th>
+                                <th class="py-3 px-3 font-medium text-left">Rekening</th>
+                                <th class="py-3 px-3 font-medium text-right">Pemasukan</th>
+                                <th class="py-3 px-3 font-medium text-right">Pengeluaran</th>
+                                <th class="py-3 px-3 font-medium text-right">Admin</th>
+                                <th class="py-3 px-3 font-medium text-left">Keterangan</th>
+                                <th class="py-3 px-3 font-medium text-right"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-body">
+                            <tr><td colspan="8" class="text-center py-5 text-gray-400">Belum ada transaksi</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Debts Section -->
+        <section class="bg-white rounded-xl p-6 border border-warm-100 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-semibold text-gray-700">Hutang</h3>
+                <button id="btn-add-debt" class="w-7 h-7 flex items-center justify-center bg-warm-500 hover:bg-warm-600 text-white rounded-full text-lg leading-none transition" title="Tambah Hutang">+</button>
+            </div>
+            <div class="overflow-x-auto scroll-thin">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-gray-400 border-b border-gray-100">
+                            <th class="py-3 px-3 font-medium text-left">Kebutuhan</th>
+                            <th class="py-3 px-3 font-medium text-left">Dari Rekening</th>
+                            <th class="py-3 px-3 font-medium text-right">Total</th>
+                            <th class="py-3 px-3 font-medium text-right">Dibayar</th>
+                            <th class="py-3 px-3 font-medium text-right">Sisa</th>
+                            <th class="py-3 px-3 font-medium text-right">Pelunasan</th>
+                            <th class="py-3 px-3 font-medium text-right" colspan="2">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="debts-body">
+                        <tr><td colspan="8" class="text-center py-4 text-gray-400">Belum ada hutang</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- ═══ Modals ═══ -->
+
+<!-- Debt Modal -->
+<div class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/40" id="debt-modal" style="display:none">
+    <div class="bg-white rounded-2xl p-5 w-full max-w-md mx-4 shadow-xl">
+        <h3 class="text-sm font-bold text-gray-800 mb-4">Tambah Hutang</h3>
+        <form id="debt-form" class="space-y-3">
+            <div>
+                <label class="block text-sm text-gray-500 mb-1">Kebutuhan Hutang</label>
+                <input type="text" id="debt-name" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-500 mb-1">Dari Rekening</label>
+                <select id="debt-account" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50"></select>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-500 mb-1">Total Pinjaman</label>
+                <input type="number" id="debt-amount" min="1" step="any" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-500 mb-1">Biaya Admin</label>
+                <input type="number" id="debt-admin" min="0" step="any" placeholder="0" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-500 mb-1">Keterangan</label>
+                <input type="text" id="debt-desc" placeholder="Opsional" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="button" onclick="closeDebtModal()" class="flex-1 py-2 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Batal</button>
+                <button type="submit" class="flex-1 py-2 text-sm font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Pay Debt Modal -->
+<div class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/40" id="pay-modal" style="display:none">
+    <div class="bg-white rounded-2xl p-5 w-full max-w-md mx-4 shadow-xl">
+        <h3 class="text-sm font-bold text-gray-800 mb-4">Bayar Hutang</h3>
+        <form id="pay-form" class="space-y-3">
+            <input type="hidden" id="pay-debt-id">
+            <div>
+                <label class="block text-sm text-gray-500 mb-1">Dari Rekening</label>
+                <select id="pay-account" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50"></select>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-500 mb-1">Jumlah Bayar</label>
+                <input type="number" id="pay-amount" min="1" step="any" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-500 mb-1">Biaya Admin</label>
+                <input type="number" id="pay-admin" min="0" step="any" placeholder="0" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="button" onclick="closePayModal()" class="flex-1 py-2 text-sm font-medium border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">Batal</button>
+                <button type="submit" class="flex-1 py-2 text-sm font-semibold bg-warm-500 hover:bg-warm-600 text-white rounded-lg">Bayar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Forced Setup Modal -->
+<div class="modal-overlay fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm" id="forced-setup-modal" style="display:none">
+    <div class="w-full max-w-3xl mx-4 max-h-[92vh] overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5">
+        <div class="border-b border-gray-100 bg-gradient-to-r from-warm-50 to-white px-6 py-5">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 rounded-full bg-warm-100 px-3 py-1 text-xs font-semibold text-warm-700">
+                        Setup Awal
+                    </div>
+                    <h3 class="mt-3 text-xl font-bold text-gray-900">Lengkapi data dasar dulu</h3>
+                    <p class="mt-1 text-sm text-gray-500">Tambah rekening, kategori, dan hutang bawaan supaya aplikasi bisa dipakai dengan normal.</p>
+                </div>
+                <div class="hidden sm:flex items-center gap-3 rounded-2xl bg-white px-4 py-2 shadow-sm ring-1 ring-gray-100">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Tahap</span>
+                    <span id="forced-step-badge-1" class="inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-warm-500 px-2 text-sm font-bold text-white ring-4 ring-warm-100">1</span>
+                    <span id="forced-step-badge-2" class="inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-gray-100 px-2 text-sm font-semibold text-gray-500">2</span>
+                    <span id="forced-step-badge-3" class="inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-gray-100 px-2 text-sm font-semibold text-gray-500">3</span>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-    // Simple navigation handler if needed
-    document.querySelectorAll('.nav a').forEach(a => {
-        a.addEventListener('click', e => {
-            e.preventDefault();
-            const href = a.getAttribute('href');
-            // For demo, just log navigation
-            console.log('Navigate to:', href);
-        });
+        <div class="max-h-[calc(92vh-92px)] overflow-y-auto scroll-thin px-6 py-6 space-y-6">
+            <!-- Sheet 1: Accounts -->
+            <section id="forced-sheet-1" class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-base font-semibold text-gray-800">1. Rekening</h4>
+                    <span class="text-xs font-medium text-gray-400">Minimal 1 rekening</span>
+                </div>
+                <div class="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
+                        <input id="forced-account-name" type="text" placeholder="Nama rekening" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-warm-200">
+                        <input id="forced-account-opening" type="number" min="0" step="any" placeholder="Saldo awal" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-warm-200">
+                        <button type="button" id="btn-add-forced-account" class="inline-flex items-center justify-center rounded-xl bg-warm-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-warm-600">+ Tambah Rekening</button>
+                    </div>
+                    <div id="forced-accounts-list" class="mt-4 space-y-2"></div>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" id="btn-forced-next" class="rounded-xl bg-warm-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-warm-600">Lanjut</button>
+                </div>
+            </section>
+
+            <!-- Sheet 2: Categories -->
+            <section id="forced-sheet-2" class="space-y-4" style="display:none">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-base font-semibold text-gray-800">2. Kategori</h4>
+                    <span class="text-xs font-medium text-gray-400">Minimal 1 kategori</span>
+                </div>
+                <div class="rounded-2xl border border-gray-100 bg-gray-50/70 p-4 space-y-4">
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-3 md:items-center">
+                        <input id="forced-category-name" type="text" placeholder="Nama kategori" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm md:col-span-2 focus:outline-none focus:ring-2 focus:ring-warm-200">
+                        <div class="flex flex-wrap gap-4 text-sm text-gray-600">
+                            <label class="inline-flex items-center gap-2"><input type="radio" name="forced-cat-type" value="income" checked> Pemasukan</label>
+                            <label class="inline-flex items-center gap-2"><input type="radio" name="forced-cat-type" value="expense"> Pengeluaran</label>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="button" id="btn-add-forced-category" class="inline-flex items-center justify-center rounded-xl bg-warm-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-warm-600">+ Tambah Kategori</button>
+                    </div>
+                    <div id="forced-categories-list" class="space-y-2"></div>
+                </div>
+                <div class="flex items-center justify-between gap-2">
+                    <button type="button" id="btn-forced-back" class="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-50">Kembali</button>
+                    <button type="button" id="btn-forced-next-debt" class="rounded-xl bg-warm-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-warm-600">Lanjut</button>
+                </div>
+            </section>
+
+            <!-- Sheet 3: Opening Debts -->
+            <section id="forced-sheet-3" class="space-y-4" style="display:none">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-base font-semibold text-gray-800">3. Hutang Bawaan</h4>
+                    <span class="text-xs font-medium text-gray-400">Opsional</span>
+                </div>
+                <div class="rounded-2xl border border-gray-100 bg-gray-50/70 p-4 space-y-4">
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
+                        <input id="forced-opening-debt-name" type="text" placeholder="Nama hutang" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm md:col-span-2 focus:outline-none focus:ring-2 focus:ring-warm-200">
+                        <input id="forced-opening-debt-amount" type="number" min="0" step="any" placeholder="Jumlah hutang" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-warm-200">
+                        <select id="forced-opening-debt-account" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-warm-200"></select>
+                    </div>
+                    <div>
+                        <input id="forced-opening-debt-desc" type="text" placeholder="Keterangan (opsional)" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-warm-200">
+                    </div>
+                    <div>
+                        <button type="button" id="btn-add-forced-opening-debt" class="inline-flex items-center justify-center rounded-xl bg-warm-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-warm-600">+ Tambah Hutang</button>
+                    </div>
+                    <div id="forced-opening-debts-list" class="space-y-2"></div>
+                </div>
+                <div class="flex items-center justify-between gap-2">
+                    <button type="button" id="btn-forced-back-debt" class="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-50">Kembali</button>
+                    <button type="button" id="btn-forced-selesai" class="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700">Selesai</button>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- Notice Modal -->
+<div id="forced-notice-modal" class="modal-overlay fixed inset-0 z-[60] hidden items-center justify-center bg-black/40" style="display:none">
+    <div class="mx-4 w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl">
+        <h4 class="text-base font-bold text-gray-900">Belum ada rekening</h4>
+        <p id="forced-notice-text" class="mt-2 text-sm text-gray-600">Silakan tambahkan minimal 1 rekening sebelum melanjutkan.</p>
+        <div class="mt-5 flex justify-end">
+            <button type="button" id="forced-notice-ok" class="rounded-xl bg-warm-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-warm-600">Oke</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if needs_setup %}
+        console.log('[FORCED-SETUP] dashboard needs_setup=true');
+        setTimeout(function() {
+            if (window.showForcedSetupModal) {
+                window.showForcedSetupModal();
+            } else {
+                console.warn('[FORCED-SETUP] showForcedSetupModal is not ready');
+            }
+        }, 100);
+        {% endif %}
     });
-    </script>
+</script>
 </body>
 </html>

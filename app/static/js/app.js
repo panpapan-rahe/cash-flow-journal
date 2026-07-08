@@ -407,22 +407,29 @@ const forcedSetupModal = document.getElementById('forced-setup-modal');
 const btnSettings = document.getElementById('btn-settings');
 const btnAddAccount = document.getElementById('btn-add-account');
 
-// Settings nav switching
+function switchSettingsTab(tabName) {
+    document.querySelectorAll('.settings-tab').forEach(n => n.classList.remove('bg-warm-100','text-warm-700'));
+    document.querySelectorAll('.settings-tab').forEach(n => n.classList.add('text-gray-500','hover:bg-warm-50'));
+    document.querySelectorAll('.settings-content').forEach(p => p.style.display = 'none');
+
+    const activeTab = document.querySelector(`.settings-tab[data-tab="${tabName}"]`);
+    if (activeTab) {
+        activeTab.classList.remove('text-gray-500','hover:bg-warm-50');
+        activeTab.classList.add('bg-warm-100','text-warm-700');
+    }
+
+    const panel = document.getElementById('content-' + tabName);
+    if (panel) panel.style.display = 'block';
+
+    if (tabName === 'accounts') loadAccountsSettings();
+    if (tabName === 'categories') loadCategoriesSettings();
+}
+
+// expose for inline onclick fallback
+window.switchSettingsTab = switchSettingsTab;
+
 document.querySelectorAll('.settings-tab').forEach(nav => {
-    nav.addEventListener('click', () => {
-        document.querySelectorAll('.settings-tab').forEach(n => n.classList.remove('bg-warm-100','text-warm-700'));
-        document.querySelectorAll('.settings-tab').forEach(n => n.classList.add('text-gray-500','hover:bg-warm-50'));
-        document.querySelectorAll('.settings-content').forEach(p => p.style.display = 'none');
-        nav.classList.remove('text-gray-500','hover:bg-warm-50');
-        nav.classList.add('bg-warm-100','text-warm-700');
-        
-        const panelId = 'content-' + nav.dataset.tab;
-        const panel = document.getElementById(panelId);
-        if (panel) panel.style.display = 'block';
-        
-        if (nav.dataset.tab === 'accounts') loadAccountsSettings();
-        if (nav.dataset.tab === 'categories') loadCategoriesSettings();
-    });
+    nav.addEventListener('click', () => switchSettingsTab(nav.dataset.tab));
 });
 
 if (btnSettings) btnSettings.addEventListener('click', async () => {
@@ -671,7 +678,51 @@ window.deleteCategory = async function(id) {
 };
 
 // ─── Forced Setup Modal (First-time user) ───
+async function checkForcedSetup() {
+    try {
+        const accounts = await api('/api/accounts');
+        if (accounts && accounts.length === 0) {
+            console.log('[FORCED-SETUP] No accounts found, triggering modal...');
+            showForcedSetupModal();
+        }
+    } catch (e) {
+        console.warn('[FORCED-SETUP] Error checking setup:', e);
+    }
+}
+
+function showForcedNotice(message) {
+    const modal = document.getElementById('forced-notice-modal');
+    const text = document.getElementById('forced-notice-text');
+    const ok = document.getElementById('forced-notice-ok');
+    if (!modal || !text || !ok) {
+        alert(message);
+        return;
+    }
+    text.textContent = message;
+    modal.style.display = 'flex';
+    ok.onclick = () => {
+        modal.style.display = 'none';
+    };
+}
+window.showForcedNotice = showForcedNotice;
+
+function setForcedSetupStep(step) {
+    const badges = [
+        document.getElementById('forced-step-badge-1'),
+        document.getElementById('forced-step-badge-2'),
+        document.getElementById('forced-step-badge-3'),
+    ];
+    badges.forEach((badge, index) => {
+        if (!badge) return;
+        const active = index + 1 === step;
+        badge.className = active
+            ? 'inline-flex h-8 w-8 items-center justify-center rounded-full bg-warm-500 text-sm font-bold text-white ring-4 ring-warm-100'
+            : 'inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-sm font-semibold text-gray-500';
+    });
+}
+
 function showForcedSetupModal() {
+    console.log('[FORCED-SETUP] showForcedSetupModal called');
     forcedAccountSeq = 0;
     forcedAccounts = [];
     forcedCategories = [];
@@ -683,8 +734,10 @@ function showForcedSetupModal() {
     document.getElementById('forced-sheet-1').style.display = 'block';
     document.getElementById('forced-sheet-2').style.display = 'none';
     document.getElementById('forced-sheet-3').style.display = 'none';
+    setForcedSetupStep(1);
     forcedSetupModal.style.display = 'flex';
 }
+window.showForcedSetupModal = showForcedSetupModal;
 
 // Sheet 1: Accounts
 const btnAddForcedAccount = document.getElementById('btn-add-forced-account');
@@ -694,6 +747,8 @@ if (btnAddForcedAccount) btnAddForcedAccount.addEventListener('click', () => {
     if (name && name.trim()) {
         forcedAccountSeq += 1;
         forcedAccounts.push({ tempId: `fa-${forcedAccountSeq}`, name: name.trim(), opening_balance: opening });
+        document.getElementById('forced-account-name').value = '';
+        document.getElementById('forced-account-opening').value = '';
         renderForcedAccounts();
         renderForcedOpeningDebtAccountOptions();
     }
@@ -702,14 +757,15 @@ if (btnAddForcedAccount) btnAddForcedAccount.addEventListener('click', () => {
 function renderForcedAccounts() {
     const container = document.getElementById('forced-accounts-list');
     if (forcedAccounts.length === 0) {
-        container.innerHTML = '<p class="empty-state">Belum ada rekening ditambahkan</p>';
+        container.innerHTML = '';
     } else {
         container.innerHTML = forcedAccounts.map((acc, i) => `
-            <div class="forced-item">
-                <span>${acc.name} • ${formatCurrency(acc.opening_balance || 0)}</span>
-                <div class="item-actions">
-                    <button class="btn btn-sm btn-danger" onclick="removeForcedAccount(${i})">Hapus</button>
+            <div class="flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
+                <div class="min-w-0">
+                    <div class="truncate text-sm font-semibold text-gray-800">${acc.name}</div>
+                    <div class="text-xs text-gray-500">${formatCurrency(acc.opening_balance || 0)}</div>
                 </div>
+                <button class="shrink-0 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-100" onclick="removeForcedAccount(${i})">Hapus</button>
             </div>
         `).join('');
     }
@@ -727,7 +783,7 @@ window.removeForcedAccount = function(index) {
 const btnForcedNext = document.getElementById('btn-forced-next');
 if (btnForcedNext) btnForcedNext.addEventListener('click', () => {
     if (forcedAccounts.length === 0) {
-        alert('Minimal tambah 1 rekening terlebih dahulu.');
+        showForcedNotice('Tambahkan minimal 1 rekening dulu sebelum lanjut ke langkah berikutnya.');
         return;
     }
     document.getElementById('forced-sheet-1').style.display = 'none';
@@ -795,6 +851,10 @@ function refreshOpeningDebtAccountSelect() {
     }
     select.disabled = false;
     select.innerHTML = '<option value="">-- Pilih Rekening --</option>' + forcedAccounts.map(acc => `<option value="${acc.tempId}">${acc.name}</option>`).join('');
+}
+
+function renderForcedOpeningDebtAccountOptions() {
+    return refreshOpeningDebtAccountSelect();
 }
 
 const btnForcedNextDebt = document.getElementById('btn-forced-next-debt');
@@ -1035,6 +1095,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load data
     checkAuth();
+    checkForcedSetup();
     
     // If on the settings page, auto-load accounts & categories tabs
     if (document.getElementById('accounts-settings-body')) {
