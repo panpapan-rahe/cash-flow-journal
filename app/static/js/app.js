@@ -866,8 +866,11 @@ function renderForcedOpeningDebtAccountOptions() {
 
 const btnForcedNextDebt = document.getElementById('btn-forced-next-debt');
 if (btnForcedNextDebt) btnForcedNextDebt.addEventListener('click', () => {
-    if (forcedCategories.length === 0) {
-        showForcedNotice('Pastikan minimal 1 kategori sudah ditambahkan.');
+    const hasIncome = forcedCategories.some(c => c.type === 'income');
+    const hasExpense = forcedCategories.some(c => c.type === 'expense');
+    
+    if (!hasIncome || !hasExpense) {
+        showForcedNotice('Pastikan tipe Pemasukan dan Pengeluaran masing-masing memiliki minimal 1 kategori.');
         return;
     }
     document.getElementById('forced-sheet-2').style.display = 'none';
